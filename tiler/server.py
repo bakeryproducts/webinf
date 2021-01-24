@@ -18,7 +18,7 @@ def tile_selector(filename, x, y, zoom):
         reader = ImageFolder(filename)
     else:
         reader = BigImage(filename)
-    
+
     reader.set_tile(x,y,zoom)
     return tile_reader(reader)
     
@@ -27,7 +27,7 @@ def tile_selector(filename, x, y, zoom):
 def tile_reader(reader):
     # fetch tile
     data = reader() 
-    print(data.shape, data.dtype)
+    print(reader.filename, data.shape, data.dtype)
     # display tile
     bio = io.BytesIO()
     im = Image.fromarray(data)
