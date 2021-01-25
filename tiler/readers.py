@@ -4,6 +4,8 @@ import cv2
 import gdal
 import numpy as np
 
+class OutOfBorder(Exception): pass
+
 class _Image:
     def __init__(self, filename, info=None):
         filename = Path(filename)
@@ -26,41 +28,36 @@ class _Image:
         self.buffer.fill(filler)
         return self.buffer
 
+    def zero_tile(self):
+        return np.zeros((1,1)).astype(np.uint8)
+
     def resize(self, block, scale):
         h, w = block.shape[:2]
-        print('hw', h,w)
         size = (self._base_tile_side, self._base_tile_side)
         if h == w: return cv2.resize(block, size, cv2.INTER_AREA)
         
         a,b = h//scale, w//scale
         block = cv2.resize(block, (b,a), cv2.INTER_AREA)
-        print(block.shape, scale)
         hh, ww = block.shape[:2]
         t = self.blank_tile(127)
         t[:hh,:ww,:] = block
         return t
-
-
 
     def read_part(self):
         raise NotImplementedError
 
 
 class BigImage(_Image):
-
     def set_tile(self, x, y, zoom):
        self.x, self.y, self.z = x,y,zoom
        self.file = gdal.Open(str(self.filename), gdal.GA_ReadOnly)
        self.dims = [self.file.RasterXSize, self.file.RasterYSize]
-       print(self.dims)
        
-
     def __call__(self):
         return self.read_part()
 
     def check_borders(self, x,y,w,h, W,H):
-        if x<0 or y<0 or x>W or y>H:
-            raise OutOfBorder
+        if x<0 or y<0 or x>W or y>H: raise OutOfBorder
         w = min(w, W-x)
         h = min(h, H-y)
         return (x,y), (w,h)
@@ -71,7 +68,7 @@ class BigImage(_Image):
         try:
             (x,y), (w,h) = self.check_borders(x,y,w,h,*self.dims)
         except OutOfBorder:
-            return self.blank_tile()
+            return self.zero_tile()
 
         block = self.file.ReadAsArray(xoff=x, yoff=y, xsize=w, ysize=h)
         del self.file 
@@ -79,8 +76,6 @@ class BigImage(_Image):
         block = self.resize(block, scale)
         return block
 
-class OutOfBorder(Exception):
-    pass
 
 class ImageFolder:
     def __init__(self, filename):
