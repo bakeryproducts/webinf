@@ -19,13 +19,14 @@
 window.onload = function () {
     //http://localhost:5000/test/{z}_{x}_{y}.png
     //http://{s}.tile.osm.org/{z}/{x}/{y}.png
-    var map = L.map('my-map');
-    L.tileLayer('http://localhost:5000/camp.tif/{z}_{x}_{y}.png', {
-    maxZoom: 6,
-    maxNativeZoom: 10,
-    maxBounds: [12817, 11172],
+    var map = L.map('my-map',{crs: L.CRS.Simple});
+    L.tileLayer('http://localhost:5000/fortBragg.tif/{z}_{x}_{y}.png', {
+        maxZoom: 10,
+        maxNativeZoom: 6,
+        maxBounds: [12817, 11172],
     }).addTo(map);
-    map.locate({setView: true, maxZoom: 6});    
+    //map.locate({setView: true, maxZoom: 6});    
+    map.setView([0.0,0.0], 6);
 //    $.getJSON("census.geojson", function(data) {
 //
 //    var geojson = L.geoJson(data, {
