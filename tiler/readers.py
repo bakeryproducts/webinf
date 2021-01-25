@@ -74,6 +74,7 @@ class BigImage(_Image):
             return self.blank_tile()
 
         block = self.file.ReadAsArray(xoff=x, yoff=y, xsize=w, ysize=h)
+        del self.file 
         block = block.transpose(1,2,0)
         block = self.resize(block, scale)
         return block
