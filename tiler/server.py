@@ -51,6 +51,6 @@ def tile_reader(reader):
 
 if __name__ == "__main__":
     uri = "file:///tmp/python-catalog/"
-    app.run(port=5051)
+    app.run(port=9051)
 
 
