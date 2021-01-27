@@ -31,7 +31,7 @@ def ll(filename):
 
 <style>
 #map {
-	width:960px;
+	width:1500px;
 	height:1000px;
 }
 </style>
