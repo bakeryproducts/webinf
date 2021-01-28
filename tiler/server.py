@@ -12,7 +12,9 @@ app = Flask(__name__)
 
 @app.route("/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
 def tile_selector(filename, x, y, zoom):
+    filename = filename.replace('__', '/')
     filename = Path('../imgs') / Path(filename)
+    print(filename)
     
     if filename.exists(): 
         if filename.is_dir(): reader = ImageFolder(filename)

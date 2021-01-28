@@ -4,6 +4,8 @@ import cv2
 import gdal
 import numpy as np
 
+import rasterio
+
 class OutOfBorder(Exception): pass
 
 class _Image:
@@ -34,10 +36,10 @@ class _Image:
     def resize(self, block, scale):
         h, w = block.shape[:2]
         size = (self._base_tile_side, self._base_tile_side)
-        if h == w: return cv2.resize(block, size, cv2.INTER_AREA)
+        if h == w: return cv2.resize(block, size, cv2.INTER_NEAREST)
         
         a,b = h//scale, w//scale
-        block = cv2.resize(block, (b,a), cv2.INTER_AREA)
+        block = cv2.resize(block, (b,a), cv2.INTER_NEAREST)
         hh, ww = block.shape[:2]
         t = self.blank_tile(127)
         t[:hh,:ww,:] = block
@@ -50,8 +52,9 @@ class _Image:
 class BigImage(_Image):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.file = gdal.Open(str(self.filename), gdal.GA_ReadOnly)
-        self.dims = [self.file.RasterXSize, self.file.RasterYSize]
+        self.dataset = rasterio.open(self.filename)#gdal.Open(str(self.filename), gdal.GA_ReadOnly)
+        self.dims = self.dataset.width, self.dataset.height#[self.file.RasterXSize, self.file.RasterYSize]
+        print(self.dataset, self.dims)
 
     def check_borders(self, x,y,w,h, W,H):
         if x<0 or y<0 or x>W or y>H: raise OutOfBorder
@@ -66,12 +69,12 @@ class BigImage(_Image):
             (x,y), (w,h) = self.check_borders(x,y,w,h,*self.dims)
         except OutOfBorder:
             return self.zero_tile()
+        print(x,y,w,h)
 
-        block = self.file.ReadAsArray(xoff=x, yoff=y, xsize=w, ysize=h)
-        del self.file 
+        block = self.dataset.read([1,2,3], window=((y,y+h),(x,x+w)))#self.file.ReadAsArray(xoff=x, yoff=y, xsize=w, ysize=h)
+        del self.dataset 
         block = block.transpose(1,2,0)
         block = self.resize(block, scale)
-        print(block.shape)
         return block
 
 
