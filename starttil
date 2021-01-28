@@ -1,0 +1,2 @@
+#!/bin/bash
+cd tiler && python3 server.py

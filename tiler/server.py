@@ -12,16 +12,21 @@ app = Flask(__name__)
 
 @app.route("/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
 def tile_selector(filename, x, y, zoom):
-    filename = Path(filename)
-    if filename.is_dir(): reader = ImageFolder(filename)
-    else: reader = BigImage(filename)
-
-    reader.set_tile(x,y,zoom)
-    return tile_reader(reader)
+    filename = Path('../imgs') / Path(filename)
     
-def tile_reader(reader):
+    if filename.exists(): 
+        if filename.is_dir(): reader = ImageFolder(filename)
+        else: reader = BigImage(filename)
+    else:
+        print(f'filename is not valid: {filename}')
+        return None
+
+    return tile_read(reader,x,y,zoom)
+    
+def tile_read(reader,x,y,zoom):
     # fetch tile
-    data = reader() 
+    data = reader(x,y,zoom)
+
     #print(reader.filename, data.shape, data.dtype)
     img_bytes = io.BytesIO()
     im = Image.fromarray(data)

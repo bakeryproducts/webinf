@@ -9,7 +9,7 @@ class OutOfBorder(Exception): pass
 class _Image:
     def __init__(self, filename, info=None):
         filename = Path(filename)
-        self.filename = 'imgs' / filename
+        self.filename = filename
         self.info = info
         self._base_zoom_level = 6
         self._base_tile_side = 256
@@ -48,13 +48,10 @@ class _Image:
 
 
 class BigImage(_Image):
-    def set_tile(self, x, y, zoom):
-       self.x, self.y, self.z = x,y,zoom
-       self.file = gdal.Open(str(self.filename), gdal.GA_ReadOnly)
-       self.dims = [self.file.RasterXSize, self.file.RasterYSize]
-       
-    def __call__(self):
-        return self.read_part()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.file = gdal.Open(str(self.filename), gdal.GA_ReadOnly)
+        self.dims = [self.file.RasterXSize, self.file.RasterYSize]
 
     def check_borders(self, x,y,w,h, W,H):
         if x<0 or y<0 or x>W or y>H: raise OutOfBorder
@@ -62,9 +59,9 @@ class BigImage(_Image):
         h = min(h, H-y)
         return (x,y), (w,h)
 
-    def read_part(self):
+    def __call__(self, x_tile, y_tile, zoom):
         # called (in mp) after set_tile
-        (x,y), (w,h), scale = self.convert_tile_idx(self.x, self.y, self.z)
+        (x,y), (w,h), scale = self.convert_tile_idx(x_tile, y_tile, zoom)
         try:
             (x,y), (w,h) = self.check_borders(x,y,w,h,*self.dims)
         except OutOfBorder:
@@ -74,6 +71,7 @@ class BigImage(_Image):
         del self.file 
         block = block.transpose(1,2,0)
         block = self.resize(block, scale)
+        print(block.shape)
         return block
 
 
