@@ -25,10 +25,20 @@ window.onload = function () {
     var layer = L.tileLayer('http://{{TILE_HOST}}:{{TILE_PORT}}/{{filename}}/{z}_{x}_{y}.png', {
         maxZoom: 10,
         maxNativeZoom: 6,
-        maxBounds: [12817, 11172],
+        //maxBounds: [12817, 11172],
     }).addTo(map);
 
     map.setView([0.0,0.0], 6);
+
+    {% for poly in polys%}
+    new L.Polyline({{poly}}, {
+        color: 'red',
+        weight: 5,
+        opacity: 1,
+        smoothFactor: 1
+    }) .addTo(map);
+    {% endfor %}
+
 
     layer.on('tileload', function(e) {
         var dd = {'data':"this is a tset"};

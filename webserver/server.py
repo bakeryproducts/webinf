@@ -27,10 +27,30 @@ def index():
 
     return s
 
+def get_polys(img):
+    js = img.with_suffix('.json')
+    with open(js, 'r') as f:
+        data = json.load(f)
+    
+    polys = []
+    for j in data:
+        p = j['geometry']['coordinates']
+        polys.append(p[0])
+    return polys
+
 @app.route("/<string:filename>")
 def ll(filename):
     print(f'FILENAME: {filename}')
-    return render_template('ll_template.html', TILE_HOST=TILE_HOST, TILE_PORT=TILE_PORT, filename=filename)
+    data = get_polys('../imgs'/Path(filename))
+    polys=[]
+    for p in data:
+        p = np.array(p)
+        p[:,1]*=-1
+        p = p[:,::-1]/64
+        p = p.tolist()
+        polys.append(p)
+
+    return render_template('ll_template.html', TILE_HOST=TILE_HOST, TILE_PORT=TILE_PORT, filename=filename, polys=polys)
 
 @app.route('/test', methods=['POST'])
 def testfn():    
