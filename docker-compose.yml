@@ -1,0 +1,28 @@
+version: "0"
+services:
+  tileserver:
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: ./tiler/Dockerfile
+    volumes:
+      - ${MOUNT_PATH}:/app/data
+    restart: always
+  webserver:
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: ./webserver/Dockerfile
+    volumes:
+      - ${MOUNT_PATH}:/app/data
+    restart: always
+  nginx:
+    restart: always
+    build:
+      dockerfile: ./nginx/Dockerfile
+      context: ./nginx
+    ports:
+      - "9050:80"
+    links:
+      - webserver
+      - tiler
