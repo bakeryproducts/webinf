@@ -1,28 +1,48 @@
-version: "0"
+version: '3.8'
 services:
-  tileserver:
-    stdin_open: true
-    build:
-      context: .
-      dockerfile: ./tiler/Dockerfile
-    volumes:
-      - ${MOUNT_PATH}:/app/data
-    restart: always
-  webserver:
-    stdin_open: true
-    build:
-      context: .
-      dockerfile: ./webserver/Dockerfile
-    volumes:
-      - ${MOUNT_PATH}:/app/data
-    restart: always
-  nginx:
-    restart: always
-    build:
-      dockerfile: ./nginx/Dockerfile
-      context: ./nginx
-    ports:
-      - "9050:80"
-    links:
-      - webserver
-      - tiler
+        webserver:
+                build:
+                        context: .
+                        dockerfile: ./webserver/Dockerfile
+                image: webserver_wv                                                     
+                container_name: crazy_alex
+                stdin_open: true
+                command: python3 /root/webserver/server.py 
+                volumes:
+                        - ${STORAGE}:/mnt/data
+                restart: always
+        tiler:
+                build:
+                        context: .
+                        dockerfile: ./tiler/Dockerfile
+                image: tiler_wv                                                      
+                container_name: mighty_gleb
+                stdin_open: true
+                command: python3 /root/tiler/server.py
+                volumes:
+                        - ${STORAGE}:/mnt/data
+                restart: always
+        labeler:
+                build:
+                        context: .
+                        dockerfile: ./labeler/Dockerfile
+                image: labeler_wv                                                      
+                container_name: sneaky_michael
+                stdin_open: true
+                command: python3 /root/labeler/server.py
+                volumes:
+                        - ${STORAGE}:/mnt/data
+                restart: always
+        nginx:
+                build:
+                        context: ./nginx
+                        dockerfile: ./Dockerfile
+                image: nginx_wv                                                      
+                container_name: inspiring_andrew
+                restart: always
+                ports:
+                        - 7088:80
+                links:
+                        - webserver
+                        - tiler
+                        - labeler
