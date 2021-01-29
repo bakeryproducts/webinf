@@ -10,7 +10,7 @@ from readers import PamReader
 app = Flask(__name__)
 
 @app.route("/label/<string:filename>")
-def ann_selector(filename, methods=['GET', 'POST']):
+def ann_selector(filename):
     filename = filename.replace('__', '/')
     filename = Path('/mnt/data') / Path(filename).with_suffix('.json')
     print(filename)

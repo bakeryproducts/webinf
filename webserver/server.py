@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def index(methods=['GET', 'POST']):
+def index():
     p = Path('/mnt/data').absolute()
     imgs, exts = [], ['*.tif', '*.tiff']
     for ext in exts:
@@ -27,11 +27,12 @@ def index(methods=['GET', 'POST']):
     return s
 
 @app.route("/view/<string:filename>")
-def ll(filename, methods=['GET', 'POST']):
+def ll(filename):
     print(f'FILENAME: {filename}')
     global TILE_HOST 
     global TILE_PORT
     return render_template('ll_template.html', TILE_HOST=TILE_HOST, TILE_PORT=TILE_PORT, filename=filename)
+
 
 @app.route('/test')
 def testfn():    
