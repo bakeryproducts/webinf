@@ -13,7 +13,7 @@ app = Flask(__name__)
 @app.route("/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
 def tile_selector(filename, x, y, zoom):
     filename = filename.replace('__', '/')
-    filename = Path('../imgs') / Path(filename)
+    filename = Path('/app/data') / Path(filename)
     print(filename)
     
     if filename.exists(): 
@@ -38,6 +38,5 @@ def tile_read(reader,x,y,zoom):
     return send_file(img_bytes, mimetype='image/png', as_attachment=False)
 
 if __name__ == "__main__":
-    app.run(port=9051)
-
-
+    app.run(host='0.0.0.0', port=7051)
+    #app.run(port=7051)

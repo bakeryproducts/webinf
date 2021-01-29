@@ -7,12 +7,14 @@ from PIL import Image
 from flask import Flask, make_response, send_file, jsonify, request, render_template
 
 app = Flask(__name__)
-WEB_HOST, WEB_PORT = 'localhost', '9050'
-TILE_HOST, TILE_PORT = 'localhost', '9051'
+#WEB_HOST, WEB_PORT = 'localhost', '7050'
+#TILE_HOST, TILE_PORT = 'localhost', '7051'
+WEB_HOST, WEB_PORT = 'webserver', '7050'
+TILE_HOST, TILE_PORT = 'tiler', '7051'
 
 @app.route('/')
 def index():
-    p = Path('../imgs').absolute()
+    p = Path('/app/data').absolute()
     imgs, exts = [], ['*.tif', '*.tiff']
     for ext in exts:
         imgs.extend(p.rglob(ext)) 
@@ -27,30 +29,10 @@ def index():
 
     return s
 
-def get_polys(img):
-    js = img.with_suffix('.json')
-    with open(js, 'r') as f:
-        data = json.load(f)
-    
-    polys = []
-    for j in data:
-        p = j['geometry']['coordinates']
-        polys.append(p[0])
-    return polys
-
 @app.route("/<string:filename>")
 def ll(filename):
     print(f'FILENAME: {filename}')
-    data = get_polys('../imgs'/Path(filename))
-    polys=[]
-    for p in data:
-        p = np.array(p)
-        p[:,1]*=-1
-        p = p[:,::-1]/64
-        p = p.tolist()
-        polys.append(p)
-
-    return render_template('ll_template.html', TILE_HOST=TILE_HOST, TILE_PORT=TILE_PORT, filename=filename, polys=polys)
+    return render_template('ll_template.html', TILE_HOST=TILE_HOST, TILE_PORT=TILE_PORT, filename=filename)
 
 @app.route('/test', methods=['POST'])
 def testfn():    
@@ -61,6 +43,5 @@ def testfn():
 
 
 if __name__ == "__main__":
-    app.run(port=WEB_PORT)
-
-
+    app.run(host='0.0.0.0', port=WEB_PORT)
+    #app.run(port=WEB_PORT)

@@ -1,0 +1,6 @@
+numpy
+opencv-python
+Flask
+Pillow
+GDAL==2.2.3
+rasterio
