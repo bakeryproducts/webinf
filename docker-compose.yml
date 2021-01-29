@@ -1,5 +1,18 @@
 version: '3.8'
 services:
+        webserver:
+                build:
+                        context: .
+                        dockerfile: ./webserver/Dockerfile
+                image: webserver_image                                                      
+                container_name: webserver_container
+                stdin_open: true
+                #tty: true
+                #command: /bin/bash
+                command: python3 /root/webserver/server.py 
+                volumes:
+                        - ${STORAGE}:/mnt/data
+                restart: always
         tiler:
                 build:
                         context: .
@@ -13,26 +26,13 @@ services:
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
-        webserver:
-                build:
-                        context: .
-                        dockerfile: ./webserver/Dockerfile
-                image: webserver_image                                                      
-                container_name: webserver_container
-                stdin_open: true
-                #tty: true
-                #command: /bin/bash
-                command: python3 /root/webserver/server.py
-                volumes:
-                        - ${STORAGE}:/mnt/data
-                restart: always
         nginx:
                 build:
                         context: ./nginx
                         dockerfile: ./Dockerfile
                 restart: always
                 ports:
-                        - "8887:80"
+                        - 7088:80
                 links:
                         - webserver
                         - tiler
