@@ -4,9 +4,6 @@ services:
                 build:
                         context: .
                         dockerfile: ./tiler/Dockerfile
-                        args:
-                            - CPLUS_INCLUDE_PATH=/usr/include/gdal
-                            - C_INCLUDE_PATH=/usr/include/gdal
                 image: tiler_image                                                      
                 container_name: tiler_container
                 stdin_open: true
@@ -14,11 +11,8 @@ services:
                 #command: /bin/bash
                 command: python3 /root/tiler/server.py
                 volumes:
-                        - ${STORAGE}:/app/data
-                #ports:
-                #        - "7051:7051"
+                        - ${STORAGE}:/mnt/data
                 restart: always
-#                network_mode: "host"
         webserver:
                 build:
                         context: .
@@ -29,12 +23,9 @@ services:
                 #tty: true
                 #command: /bin/bash
                 command: python3 /root/webserver/server.py
-                #ports:
-                #        - "7050:7050"
                 volumes:
-                        - ${STORAGE}:/app/data
+                        - ${STORAGE}:/mnt/data
                 restart: always
-#                network_mode: "host"
         nginx:
                 build:
                         context: ./nginx

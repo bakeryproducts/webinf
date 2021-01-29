@@ -9,3 +9,6 @@ attach:
 	docker attach ${CONTAINER}
 stop:
 	docker-compose down 
+restart:
+	docker-compose down && \
+	docker-compose -f ./docker-compose.yml --env-file ${CONFIG} up --build --detach

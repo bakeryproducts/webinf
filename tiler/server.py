@@ -10,10 +10,10 @@ from readers import ImageFolder, BigImage
 app = Flask(__name__)
 
 
-@app.route("/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
+@app.route("/tile/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
 def tile_selector(filename, x, y, zoom):
     filename = filename.replace('__', '/')
-    filename = Path('/app/data') / Path(filename)
+    filename = Path('/mnt/data') / Path(filename)
     print(filename)
     
     if filename.exists(): 

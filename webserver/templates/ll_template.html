@@ -22,7 +22,7 @@
 <script>
 window.onload = function () {
     var map = L.map('map',{crs: L.CRS.Simple});
-    var layer = L.tileLayer('http://{{TILE_HOST}}:{{TILE_PORT}}/{{filename}}/{z}_{x}_{y}.png', {
+    var layer = L.tileLayer('http://{{TILE_HOST}}:{{TILE_PORT}}/tile/{{filename}}/{z}_{x}_{y}.png', {
         maxZoom: 10,
         maxNativeZoom: 6,
         maxBounds: [12817, 11172],
@@ -30,23 +30,6 @@ window.onload = function () {
 
     map.setView([0.0,0.0], 6);
 
-    layer.on('tileload', function(e) {
-        var dd = {'data':"this is a tset"};
-        $.ajax({
-            type: "POST",
-            url: '/test',
-            data: JSON.stringify(dd),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function(data){
-                //console.log(data);
-                },
-            error: function(errMsg) {
-                alert(errMsg);
-            }
-        });
-
-    })
 };
 </script>
 
