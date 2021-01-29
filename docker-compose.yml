@@ -1,23 +1,5 @@
 version: '3.8'
 services:
-        tiler:
-                build:
-                        context: .
-                        dockerfile: ./tiler/Dockerfile
-                        args:
-                            - CPLUS_INCLUDE_PATH=/usr/include/gdal
-                            - C_INCLUDE_PATH=/usr/include/gdal
-                image: tiler_image                                                      
-                container_name: tiler_container
-                stdin_open: true
-                #tty: true
-                #command: /bin/bash
-                command: python3 /root/tiler/server.py
-                volumes:
-                        - ${STORAGE}:/app/data
-                #ports:
-                #        - "7051:7051"
-                restart: always
         webserver:
                 build:
                         context: .
@@ -27,11 +9,22 @@ services:
                 stdin_open: true
                 #tty: true
                 #command: /bin/bash
-                command: python3 /root/webserver/server.py
-                #ports:
-                #        - "7050:7050"
+                command: python3 /root/webserver/server.py 
                 volumes:
-                        - ${STORAGE}:/app/data
+                        - ${STORAGE}:/mnt/data
+                restart: always
+        tiler:
+                build:
+                        context: .
+                        dockerfile: ./tiler/Dockerfile
+                image: tiler_image                                                      
+                container_name: tiler_container
+                stdin_open: true
+                #tty: true
+                #command: /bin/bash
+                command: python3 /root/tiler/server.py
+                volumes:
+                        - ${STORAGE}:/mnt/data
                 restart: always
         nginx:
                 build:
@@ -39,7 +32,7 @@ services:
                         dockerfile: ./Dockerfile
                 restart: always
                 ports:
-                        - "8887:80"
+                        - 7088:80
                 links:
                         - webserver
                         - tiler

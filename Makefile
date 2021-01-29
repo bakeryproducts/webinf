@@ -1,11 +1,12 @@
-.PHONY: all up attach stop
+.PHONY: all up attach stop restart
 CONFIG=config/config.env
 include ${CONFIG}                                                                                    
 
-all: up attach
+all: up 
 up:
 	docker-compose -f ./docker-compose.yml --env-file ${CONFIG} up --build --detach
 attach:
 	docker attach ${CONTAINER}
-stop:
+stop: 
 	docker-compose down 
+restart: stop up

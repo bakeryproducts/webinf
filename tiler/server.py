@@ -1,4 +1,5 @@
 import io
+import argparse
 from PIL import Image
 from pathlib import Path
 
@@ -9,11 +10,10 @@ from readers import ImageFolder, BigImage
 
 app = Flask(__name__)
 
-
-@app.route("/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
+@app.route("/tile/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
 def tile_selector(filename, x, y, zoom):
     filename = filename.replace('__', '/')
-    filename = Path('/app/data') / Path(filename)
+    filename = Path('/mnt/data') / Path(filename)
     print(filename)
     
     if filename.exists(): 
@@ -26,7 +26,6 @@ def tile_selector(filename, x, y, zoom):
     return tile_read(reader,x,y,zoom)
     
 def tile_read(reader,x,y,zoom):
-    # fetch tile
     data = reader(x,y,zoom)
 
     #print(reader.filename, data.shape, data.dtype)
@@ -38,5 +37,8 @@ def tile_read(reader,x,y,zoom):
     return send_file(img_bytes, mimetype='image/png', as_attachment=False)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=7051)
-    #app.run(port=7051)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--p', default='7051', help='port')
+    parser.add_argument('--h', default='0.0.0.0', help='host')
+    args = parser.parse_args()
+    app.run(host=args.h, port=args.p)

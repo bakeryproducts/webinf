@@ -9,7 +9,7 @@ RUN apt-get update --fix-missing && \
 		libgdal-dev
 
 ADD tiler/requirements.txt /root/tiler/requirements.txt
-ARG CPLUS_INCLUDE_PATH
-ARG C_INCLUDE_PATH
+ARG CPLUS_INCLUDE_PATH=/usr/include/gdal
+ARG C_INCLUDE_PATH=/usr/include/gdal
 RUN pip3 install --no-cache-dir -r /root/tiler/requirements.txt 
 ADD tiler /root/tiler
