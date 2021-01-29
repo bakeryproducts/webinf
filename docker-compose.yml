@@ -26,6 +26,19 @@ services:
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
+        labler:
+                build:
+                        context: .
+                        dockerfile: ./labeler/Dockerfile
+                image: labeler_image                                                      
+                container_name: labeler_container
+                stdin_open: true
+                #tty: true
+                #command: /bin/bash
+                command: python3 /root/labeler/server.py
+                volumes:
+                        - ${STORAGE}:/mnt/data
+                restart: always
         nginx:
                 build:
                         context: ./nginx
@@ -36,3 +49,4 @@ services:
                 links:
                         - webserver
                         - tiler
+                        - labler

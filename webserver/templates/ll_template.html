@@ -30,6 +30,19 @@ window.onload = function () {
 
     map.setView([0.0,0.0], 6);
 
+    $.ajax({
+        type: "POST",
+        url: '/label/{{filename}}',
+        //data: JSON.stringify(dd),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
+            console.log(data);
+            },
+        error: function(errMsg) {
+            alert(errMsg);
+        }
+    });
 };
 </script>
 

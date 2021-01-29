@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def index():
+def index(methods=['GET', 'POST']):
     p = Path('/mnt/data').absolute()
     imgs, exts = [], ['*.tif', '*.tiff']
     for ext in exts:
@@ -23,11 +23,11 @@ def index():
         re_img_sub_path = img_sub_path.replace('/', '__') # potomuchto.
         url = f'<a href="view/' + re_img_sub_path + '">'+img_sub_path+'</a>'
         s += url
-        s += '<br/>'
+        s += '<br/>\n'
     return s
 
 @app.route("/view/<string:filename>")
-def ll(filename):
+def ll(filename, methods=['GET', 'POST']):
     print(f'FILENAME: {filename}')
     global TILE_HOST 
     global TILE_PORT
