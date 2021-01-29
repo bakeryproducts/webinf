@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+        tiler:
+                build:
+                        context: .
+                        dockerfile: ./tiler/Dockerfile
+                        args:
+                            - CPLUS_INCLUDE_PATH=/usr/include/gdal
+                            - C_INCLUDE_PATH=/usr/include/gdal
+                image: tiler_image                                                      
+                container_name: tiler_container
+                stdin_open: true
+                #tty: true
+                #command: /bin/bash
+                command: python3 /root/tiler/server.py
+                volumes:
+                        - ${STORAGE}:/app/data
+                #ports:
+                #        - "7051:7051"
+                restart: always
+#                network_mode: "host"
+        webserver:
+                build:
+                        context: .
+                        dockerfile: ./webserver/Dockerfile
+                image: webserver_image                                                      
+                container_name: webserver_container
+                stdin_open: true
+                #tty: true
+                #command: /bin/bash
+                command: python3 /root/webserver/server.py
+                #ports:
+                #        - "7050:7050"
+                volumes:
+                        - ${STORAGE}:/app/data
+                restart: always
+#                network_mode: "host"
+        nginx:
+                build:
+                        context: ./nginx
+                        dockerfile: ./Dockerfile
+                restart: always
+                ports:
+                        - "8887:80"
+                links:
+                        - webserver
+                        - tiler
