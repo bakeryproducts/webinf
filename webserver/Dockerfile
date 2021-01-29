@@ -1,9 +1,6 @@
-FROM python:3.8
-#FROM ubuntu:20.04
+FROM python:3.6.9-slim
 
-#RUN apt-get update && \
-#	apt-get install \
-#		vim
+RUN apt-get update 
 
 ADD webserver/requirements.txt /root/webserver/requirements.txt
 WORKDIR /root/webserver

@@ -1,6 +1,6 @@
 numpy
 opencv-python
-Flask
 Pillow
+Flask
 GDAL==2.2.3
 rasterio

@@ -4,7 +4,6 @@ import argparse
 import numpy as np
 from pathlib import Path
 
-from PIL import Image
 from flask import Flask, make_response, send_file, jsonify, request, render_template
 
 app = Flask(__name__)

@@ -4,11 +4,9 @@ services:
                 build:
                         context: .
                         dockerfile: ./webserver/Dockerfile
-                image: webserver_image                                                      
-                container_name: webserver_container
+                image: webserver_wv                                                     
+                container_name: crazy_alex
                 stdin_open: true
-                #tty: true
-                #command: /bin/bash
                 command: python3 /root/webserver/server.py 
                 volumes:
                         - ${STORAGE}:/mnt/data
@@ -17,24 +15,20 @@ services:
                 build:
                         context: .
                         dockerfile: ./tiler/Dockerfile
-                image: tiler_image                                                      
-                container_name: tiler_container
+                image: tiler_wv                                                      
+                container_name: mighty_gleb
                 stdin_open: true
-                #tty: true
-                #command: /bin/bash
                 command: python3 /root/tiler/server.py
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
-        labler:
+        labeler:
                 build:
                         context: .
                         dockerfile: ./labeler/Dockerfile
-                image: labeler_image                                                      
-                container_name: labeler_container
+                image: labeler_wv                                                      
+                container_name: sneaky_michael
                 stdin_open: true
-                #tty: true
-                #command: /bin/bash
                 command: python3 /root/labeler/server.py
                 volumes:
                         - ${STORAGE}:/mnt/data
@@ -43,10 +37,12 @@ services:
                 build:
                         context: ./nginx
                         dockerfile: ./Dockerfile
+                image: nginx_wv                                                      
+                container_name: inspiring_andrew
                 restart: always
                 ports:
                         - 7088:80
                 links:
                         - webserver
                         - tiler
-                        - labler
+                        - labeler
