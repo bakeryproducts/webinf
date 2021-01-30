@@ -1,9 +1,6 @@
 import json
 from pathlib import Path
 
-import numpy as np
-
-
 class _Annotation:
     def __init__(self, filename, info=None):
         filename = Path(filename)
@@ -19,13 +16,13 @@ class PamReader(_Annotation):
             data = json.load(f)
         
         polys = []
-        for j in data:
-            p = j['geometry']['coordinates'][0]
-            p = np.array(p)
-            p[:,1]*=-1
-            p = p[:,::-1]/64
-            p = p.tolist()
-            polys.append(p)
+        for ann in data:
+            poly = ann['geometry']['coordinates'][0]
+            scaled_poly = []
+            for point in poly:
+                point[0], point[1] = -point[1]/64,point[0]/64
+                scaled_poly.append(point)
+            polys.append(scaled_poly)
 
         return polys
 

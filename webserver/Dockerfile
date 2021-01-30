@@ -1,6 +1,6 @@
-FROM python:3.6.9-slim
+FROM python:3.6-alpine
 
-RUN apt-get update 
+#RUN apt-get update 
 
 ADD webserver/requirements.txt /root/webserver/requirements.txt
 WORKDIR /root/webserver

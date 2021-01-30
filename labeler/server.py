@@ -2,7 +2,6 @@ import io
 import argparse
 from pathlib import Path
 
-import numpy as np
 from flask import Flask, make_response, send_file, jsonify
 
 from readers import PamReader

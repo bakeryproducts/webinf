@@ -1,7 +1,6 @@
 import io
 import json
 import argparse
-import numpy as np
 from pathlib import Path
 
 from flask import Flask, make_response, send_file, jsonify, request, render_template
