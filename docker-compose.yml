@@ -7,9 +7,9 @@ services:
                 image: webserver_${NAME}_image
                 container_name: webserver_${NAME}_container
                 stdin_open: true
-                #tty: true
-                #command: /bin/bash
-                command: flask run
+                tty: true
+                command: /bin/bash
+                #command: flask run
                 environment:
                         - STORAGE=${STORAGE}
                         - NGX_PORT=${NGX_PORT}
