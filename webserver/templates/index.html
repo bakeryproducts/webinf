@@ -21,11 +21,11 @@
 {% endblock %}
 
 {% block content %}
-<div id="map"></div>
+<div id="full-size"></div>
 
 <script>
 window.onload = function () {
-	var map = L.map('map',{crs: L.CRS.Simple});
+	var map = L.map('full-size',{crs: L.CRS.Simple});
 	var layer = L.tileLayer('http://{{TILE_HOST}}:{{TILE_PORT}}/tile/{{filename}}/{z}_{x}_{y}.png', {
 		maxZoom: 10,
 		maxNativeZoom: 6,
