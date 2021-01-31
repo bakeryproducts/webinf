@@ -1,6 +1,6 @@
 import io
+import os
 import json
-import argparse
 import numpy as np
 from pathlib import Path
 
@@ -8,11 +8,11 @@ from PIL import Image
 from flask import Flask, make_response, send_file, jsonify, request, render_template
 
 app = Flask(__name__)
-
+app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
 @app.route('/')
 def index():
-    p = Path('/mnt/data').absolute()
+    p = Path(os.getenv('STORAGE')).absolute()
     imgs, exts = [], ['*.tif', '*.tiff']
     for ext in exts:
         imgs.extend(p.rglob(ext)) 
@@ -29,8 +29,8 @@ def index():
 @app.route("/view/<string:filename>")
 def ll(filename):
     print(f'FILENAME: {filename}')
-    global TILE_HOST 
-    global TILE_PORT
+    TILE_PORT = os.environ['NGX_PORT']
+    TILE_HOST = os.environ['NGX_HOST']
     return render_template('ll_template.html', TILE_HOST=TILE_HOST, TILE_PORT=TILE_PORT, filename=filename)
 
 @app.route('/test')
@@ -40,21 +40,6 @@ def testfn():
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--th', default='localhost', help='tile host')
-    parser.add_argument('--tp', default='7088', help='tile port')
-
-    parser.add_argument('--h', default='0.0.0.0', help='web server host')
-    parser.add_argument('--p', default='7050', help='web server port')
-
-    args = parser.parse_args()
-    TILE_HOST = args.th
-    TILE_PORT = args.tp
-
-    app.run(host=args.h, port=args.p)
-
-
-
-
-
-
+    TILE_PORT = os.environ['NGX_PORT']
+    TILE_HOST = os.environ['NGX_HOST']
+    app.run()

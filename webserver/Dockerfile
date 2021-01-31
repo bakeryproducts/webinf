@@ -1,9 +1,9 @@
 FROM python:3.8
 #FROM ubuntu:20.04
 
-#RUN apt-get update && \
-#	apt-get install \
-#		vim
+RUN apt-get update --fix-missing && \
+	apt-get install -y --no-install-recommends \
+		vim
 
 ADD webserver/requirements.txt /root/webserver/requirements.txt
 WORKDIR /root/webserver
