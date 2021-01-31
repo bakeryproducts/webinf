@@ -40,6 +40,25 @@ services:
                 volumes:
                         - ${STORAGE_HOST}:${STORAGE}
                 restart: always
+        labeler:
+                build:
+                        context: .
+                        dockerfile: ./labeler/Dockerfile
+                image: labeler_${NAME}_image
+                container_name: labeler_${NAME}_container
+                stdin_open: true
+                #tty: true
+                #command: /bin/bash
+                command: flask run
+                environment:
+                        - STORAGE=${STORAGE}
+                        - FLASK_ENV=development
+                        - FLASK_APP=/root/labeler/server.py
+                        - FLASK_RUN_HOST=0.0.0.0
+                        - FLASK_RUN_PORT=${LAB_PORT}
+                volumes:
+                        - ${STORAGE_HOST}:${STORAGE}
+                restart: always
         nginx:
                 build:
                         context: ./nginx

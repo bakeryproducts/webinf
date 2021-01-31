@@ -29,7 +29,27 @@ window.onload = function () {
     }).addTo(map);
 
     map.setView([0.0,0.0], 6);
-
+    $.ajax({
+        type: "GET",
+        url: '/label/{{filename}}',
+        //data: JSON.stringify(dd),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data){
+            //console.log(data);
+                data.forEach(function(e){
+                    new L.Polyline(e, {
+                        color: 'red',
+                        weight: 3,
+                        opacity: 1,
+                        smoothFactor: 1
+                    }) .addTo(map);
+                });
+            },
+        error: function(errMsg) {
+            //alert(errMsg);
+        }
+    });
 };
 </script>
 
