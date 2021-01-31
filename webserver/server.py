@@ -27,9 +27,11 @@ def index():
 @app.route("/view/<string:filename>")
 def ll(filename):
     print(f'FILENAME: {filename}')
-    TILE_PORT = os.environ['NGX_PORT']
-    TILE_HOST = os.environ['NGX_HOST']
-    return render_template('ll_template.html', TILE_HOST=TILE_HOST, TILE_PORT=TILE_PORT, filename=filename)
+    #return render_template('ll_template.html',
+    return render_template('index.html',
+		TILE_HOST=os.environ['NGX_HOST'], 
+		TILE_PORT=os.environ['NGX_PORT'],
+		filename=filename)
 
 @app.route('/test')
 def testfn():    
