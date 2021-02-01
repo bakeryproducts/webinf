@@ -19,11 +19,10 @@ def index():
             'ref': img_sub_path.replace('/', '__'), 
             'name': img_sub_path
         })
-    return render_template('route.html', imgs=imgs_list)
+    return render_template('index.html', imgs=imgs_list)
 
 @app.route("/view/<string:filename>")
 def ll(filename):
-    print(f'FILENAME: {filename}')
     return render_template('route.html',
 		TILE_HOST=os.environ['NGX_HOST'], 
 		TILE_PORT=os.environ['NGX_PORT'],
@@ -36,6 +35,4 @@ def testfn():
 
 
 if __name__ == "__main__":
-    TILE_PORT = os.environ['NGX_PORT']
-    TILE_HOST = os.environ['NGX_HOST']
     app.run()
