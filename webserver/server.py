@@ -10,7 +10,7 @@ app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
 @app.route('/')
 def index():
-    p = Path(os.getenv('STORAGE')).absolute()
+    p = Path('/mnt/data').absolute()
     imgs_list, imgs, exts = [], [], ['*.tif', '*.tiff']
     [imgs.extend(p.rglob(ext)) for ext in exts]
     for img in imgs:

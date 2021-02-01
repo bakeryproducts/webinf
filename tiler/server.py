@@ -14,7 +14,7 @@ app.config.update(TEMPLATES_AUTO_RELOAD=True)
 @app.route("/tile/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
 def tile_selector(filename, x, y, zoom):
     filename = filename.replace('__', '/')
-    filename = Path(os.getenv('STORAGE')) / Path(filename)
+    filename = Path('/mnt/data') / Path(filename)
     print(filename)
     
     if filename.exists(): 

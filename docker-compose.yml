@@ -11,7 +11,6 @@ services:
                 #command: /bin/bash
                 command: flask run
                 environment:
-                        - STORAGE=${STORAGE}
                         - NGX_PORT=${NGX_PORT}
                         - NGX_HOST=localhost
                         - FLASK_ENV=development
@@ -19,7 +18,7 @@ services:
                         - FLASK_RUN_HOST=0.0.0.0
                         - FLASK_RUN_PORT=${WEB_PORT}
                 volumes:
-                        - ${STORAGE_HOST}:${STORAGE}
+                        - ${STORAGE}:/mnt/data
                 restart: always
         tiler:
                 build:
@@ -32,13 +31,12 @@ services:
                 #command: /bin/bash
                 command: flask run
                 environment:
-                        - STORAGE=${STORAGE}
                         - FLASK_ENV=development
                         - FLASK_APP=/root/tiler/server.py
                         - FLASK_RUN_HOST=0.0.0.0
                         - FLASK_RUN_PORT=${TIL_PORT}
                 volumes:
-                        - ${STORAGE_HOST}:${STORAGE}
+                        - ${STORAGE}:/mnt/data
                 restart: always
         labeler:
                 build:
@@ -51,13 +49,12 @@ services:
                 #command: /bin/bash
                 command: flask run
                 environment:
-                        - STORAGE=${STORAGE}
                         - FLASK_ENV=development
                         - FLASK_APP=/root/labeler/server.py
                         - FLASK_RUN_HOST=0.0.0.0
                         - FLASK_RUN_PORT=${LAB_PORT}
                 volumes:
-                        - ${STORAGE_HOST}:${STORAGE}
+                        - ${STORAGE}:/mnt/data
                 restart: always
         nginx:
                 build:
