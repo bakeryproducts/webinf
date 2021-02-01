@@ -33,6 +33,17 @@ services:
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
+        infer:
+                build:
+                        context: .
+                        dockerfile: ./infer/Dockerfile
+                image: infer_wv                                                      
+                container_name: blazing_dmitriy
+                stdin_open: true
+                command: python3 /root/infer/server.py
+                volumes:
+                        - ${STORAGE}:/mnt/data
+                restart: always
         nginx:
                 build:
                         context: ./nginx
