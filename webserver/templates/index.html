@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% for img in imgs %}
+	<a href="view/{{ img.ref }}"> {{ img.name }}</a>
+	<br/>
+{% endfor %}
+
+{% endblock %}

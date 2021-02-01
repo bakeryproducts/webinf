@@ -1,5 +1,5 @@
 import io
-import argparse
+import os
 from PIL import Image
 from pathlib import Path
 
@@ -9,11 +9,12 @@ from flask import Flask, make_response, send_file
 from readers import ImageFolder, BigImage
 
 app = Flask(__name__)
+app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
 @app.route("/tile/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
 def tile_selector(filename, x, y, zoom):
     filename = filename.replace('__', '/')
-    filename = Path('/mnt/data') / Path(filename)
+    filename = Path(os.getenv('STORAGE')) / Path(filename)
     print(filename)
     
     if filename.exists(): 
@@ -37,8 +38,4 @@ def tile_read(reader,x,y,zoom):
     return send_file(img_bytes, mimetype='image/png', as_attachment=False)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--p', default='7051', help='port')
-    parser.add_argument('--h', default='0.0.0.0', help='host')
-    args = parser.parse_args()
-    app.run(host=args.h, port=args.p)
+    app.run()
