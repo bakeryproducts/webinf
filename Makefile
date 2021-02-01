@@ -7,4 +7,4 @@ start:
 	docker-compose -f ./docker-compose.yml --env-file ${CONFIG} up --build --detach
 stop:
 	docker-compose down
-restart: stop up
+restart: stop start
