@@ -13,7 +13,7 @@ app.config.update(TEMPLATES_AUTO_RELOAD=True)
 @app.route("/label/<string:filename>")
 def ann_selector(filename):
     filename = filename.replace('__', '/')
-    filename = Path(os.getenv('STORAGE')) / Path(filename).with_suffix('.json')
+    filename = Path('/mnt/data') / Path(filename).with_suffix('.json')
     print(filename)
     
     if filename.exists(): 
