@@ -45,8 +45,6 @@ class _Image:
         t[:hh,:ww,:] = block
         return t
 
-    def read_part(self):
-        raise NotImplementedError
 
 
 class BigImage(_Image):
@@ -62,16 +60,26 @@ class BigImage(_Image):
         h = min(h, H-y)
         return (x,y), (w,h)
 
-    def __call__(self, x_tile, y_tile, zoom):
+    def _read_raster(self, x,y,w,h):
+        return self.dataset.read([1,2,3], window=((y,y+h),(x,x+w)))
+
+    def read_raster(self, l_tile, t_tile, r_tile, b_tile, zoom):
+        (l, t), _, _ = self.convert_tile_idx(l_tile, t_tile, zoom)
+        (r0, b0), (w,h), _ = self.convert_tile_idx(r_tile, b_tile, zoom)
+        r, b = r0+w, b0+h
+        block = self._read_raster(l,t, r-l, b-t)
+        block = block.transpose(1,2,0)
+        return block
+
+    def read_tile(self, x_tile, y_tile, zoom):
         # called (in mp) after set_tile
         (x,y), (w,h), scale = self.convert_tile_idx(x_tile, y_tile, zoom)
         try:
             (x,y), (w,h) = self.check_borders(x,y,w,h,*self.dims)
         except OutOfBorder:
             return self.zero_tile()
-        print(x,y,w,h)
 
-        block = self.dataset.read([1,2,3], window=((y,y+h),(x,x+w)))#self.file.ReadAsArray(xoff=x, yoff=y, xsize=w, ysize=h)
+        block = self._read_raster(x,y,w,h)
         del self.dataset 
         block = block.transpose(1,2,0)
         block = self.resize(block, scale)

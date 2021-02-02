@@ -4,9 +4,9 @@ include ${CONFIG}
 
 all: start 
 start:
-	docker-compose -f ./docker-compose.yml --env-file ${CONFIG} up --build --detach
+	docker-compose -f ./docker-compose.yml --env-file ${CONFIG} up --build  --detach
 attach:
 	docker attach ${CONTAINER}
 stop: 
-	docker-compose down 
+	docker-compose kill 
 restart: stop start

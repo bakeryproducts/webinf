@@ -22,6 +22,9 @@ services:
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
+
+                environment:
+                        - PYTHONUNBUFFERED=1
         labeler:
                 build:
                         context: .
