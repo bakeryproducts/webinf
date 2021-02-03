@@ -1,27 +1,32 @@
 import io
 import argparse
+import requests
 from pathlib import Path
 from PIL import Image
-import base64
+
+from mwrap import inference
 
 import numpy as np
 from flask import Flask, make_response, send_file, jsonify
 
 app = Flask(__name__)
 
-@app.route("/infer/<string:filename>")
-def infer_processer(filename):
-    filename = filename.replace('__', '/')
-    mask = (np.random.random((200,200,3))*255.).astype(np.uint8)
+@app.route("/infer/<string:filename>/<int:zoom>_<int:l>_<int:t>_<int:r>_<int:b>")
+def infer_processer(filename, zoom, l, t, r, b):
+    TILE_HOST, TILE_PORT = 'tiler', "7051"
+    r = requests.get(f"http://{TILE_HOST}:{TILE_PORT}/tile/{filename}/{zoom}_{l}_{t}_{r}_{b}")
+    img_stream = io.BytesIO(r.content)
+    img = np.array(Image.open(img_stream))
+    print(img.shape)
+    res = inference(img)
+    return send_image(res)
 
+def send_image(data):
     img_bytes = io.BytesIO()
-    im = Image.fromarray(mask)
+    im = Image.fromarray(data)
     im.convert('RGBA').save(img_bytes, format='PNG')
     img_bytes.seek(0, 0)
-    b64_img = base64.b64encode(img_bytes.read())
-
-    #return send_file(img_bytes, mimetype='image/png', as_attachment=False)
-    return jsonify({'mask':b64_img.decode('utf-8')})
+    return send_file(img_bytes, mimetype='image/png', as_attachment=False)
 
 #@app.route("/proxy-example")
 #def proxy_example():

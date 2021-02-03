@@ -1,3 +1,16 @@
 pillow
+requests
 numpy
 Flask
+opencv-python 
+albumentations 
+numpy
+fastprogress 
+tqdm 
+matplotlib 
+torchvision
+torchsummary
+pycocotools 
+scipy 
+yacs 
+loguru

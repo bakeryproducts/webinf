@@ -17,7 +17,6 @@ class PamReader(_Annotation):
         
         polys = []
         for ann in data:
-            print(ann)
             poly = ann['geometry']['coordinates'][0]
             scaled_poly = []
             for point in poly:
@@ -39,6 +38,4 @@ class PamReader(_Annotation):
                 polys.append(self._read_ann(filename))
 
         return polys
-                
-
 

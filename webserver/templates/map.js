@@ -41,16 +41,17 @@ function onKeyPressed(e) {
         r+=1;
         b+=1;
 
-        var url = `/tile/${filename}/${zoom}_${cds[0][0]}_${cds[0][1]}_${cds[1][0]}_${cds[1][1]}`;
-        imageBounds = [[-256*t/mod, l*256/mod], [-b*256/mod, r*256/mod]];
-        L.imageOverlay(url, imageBounds, {opacity:.3}).addTo(map).bringToFront();
-
         L.polyline([[-t*256/mod, l*256/mod], 
                     [-t*256/mod, r*256/mod],
                     [-b*256/mod, r*256/mod],
                     [-b*256/mod, l*256/mod],
                     [-t*256/mod, l*256/mod], 
         ], {color:'red', weight: 2}).addTo(map);
+
+        var url = `/infer/${filename}/${zoom}_${cds[0][0]}_${cds[0][1]}_${cds[1][0]}_${cds[1][1]}`;
+        imageBounds = [[-256*t/mod, l*256/mod], [-b*256/mod, r*256/mod]];
+        L.imageOverlay(url, imageBounds, {opacity:.7}).addTo(map).bringToFront();
+
     };
 };
 

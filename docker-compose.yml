@@ -38,6 +38,7 @@ services:
                 environment:
                         - PYTHONUNBUFFERED=1
         infer:
+                runtime: nvidia
                 build:
                         context: .
                         dockerfile: ./infer/Dockerfile
@@ -50,6 +51,7 @@ services:
                 restart: always
                 environment:
                         - PYTHONUNBUFFERED=1
+                ipc: 'host'
         nginx:
                 build:
                         context: ./nginx

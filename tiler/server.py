@@ -33,13 +33,12 @@ def tile_selector(filename, x, y, zoom):
 def raster_selector(filename, zoom, l,t,r,b):
     reader = create_reader(filename)
     data = reader.read_raster(l,t,r,b, zoom)
-    data[...,0] *=0
     return send_image(data)
 
 def send_image(data):
     img_bytes = io.BytesIO()
     im = Image.fromarray(data)
-    im.convert('RGBA').save(img_bytes, format='PNG')
+    im.convert('RGB').save(img_bytes, format='PNG')
     img_bytes.seek(0, 0)
     return send_file(img_bytes, mimetype='image/png', as_attachment=False)
 
