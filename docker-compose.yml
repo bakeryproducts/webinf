@@ -11,6 +11,7 @@ services:
                 #command: /bin/bash
                 command: flask run
                 environment:
+                        - STORAGE=${STORAGE}
                         - NGX_PORT=${NGX_PORT}
                         - NGX_HOST=localhost
                         - FLASK_ENV=development
@@ -18,7 +19,7 @@ services:
                         - FLASK_RUN_HOST=0.0.0.0
                         - FLASK_RUN_PORT=${WEB_PORT}
                 volumes:
-                        - ${STORAGE}:/mnt/data
+                        - ${STORAGE_HOST}:${STORAGE}
                 restart: always
         tiler:
                 build:
@@ -31,15 +32,15 @@ services:
                 #command: /bin/bash
                 command: flask run
                 environment:
+                        - PYTHONUNBUFFERED=1
+                        - STORAGE=${STORAGE}
                         - FLASK_ENV=development
                         - FLASK_APP=/root/tiler/server.py
                         - FLASK_RUN_HOST=0.0.0.0
                         - FLASK_RUN_PORT=${TIL_PORT}
                 volumes:
-                        - ${STORAGE}:/mnt/data
+                        - ${STORAGE_HOST}:${STORAGE}
                 restart: always
-                environment:
-                        - PYTHONUNBUFFERED=1
         labeler:
                 build:
                         context: .
@@ -51,28 +52,33 @@ services:
                 #command: /bin/bash
                 command: flask run
                 environment:
+                        - PYTHONUNBUFFERED=1
+                        - STORAGE=${STORAGE}
                         - FLASK_ENV=development
                         - FLASK_APP=/root/labeler/server.py
                         - FLASK_RUN_HOST=0.0.0.0
                         - FLASK_RUN_PORT=${LAB_PORT}
                 volumes:
-                        - ${STORAGE}:/mnt/data
+                        - ${STORAGE_HOST}:${STORAGE}
                 restart: always
-                environment:
-                        - PYTHONUNBUFFERED=1
         infer:
                 build:
                         context: .
                         dockerfile: ./infer/Dockerfile
-                image: infer_wv                                                      
-                container_name: blazing_dmitriy
+                image: infer_${NAME}_image
+                container_name: infer_${NAME}_container
                 stdin_open: true
-                command: python3 /root/infer/server.py
-                volumes:
-                        - ${STORAGE}:/mnt/data
-                restart: always
+                command: flask run
                 environment:
+                        - STORAGE=${STORAGE}
                         - PYTHONUNBUFFERED=1
+                        - FLASK_ENV=development
+                        - FLASK_APP=/root/infer/server.py
+                        - FLASK_RUN_HOST=0.0.0.0
+                        - FLASK_RUN_PORT=${INF_PORT}
+                volumes:
+                        - ${STORAGE_HOST}:${STORAGE}
+                restart: always
         nginx:
                 build:
                         context: ./nginx

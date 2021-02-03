@@ -13,8 +13,7 @@ app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
 def create_reader(filename):
     filename = filename.replace('__', '/')
-    filename = Path('/mnt/data') / Path(filename)
-    print(filename)
+    filename = Path(os.getenv('STORAGE')) / Path(filename)
     
     if filename.exists(): 
         if filename.is_dir(): reader = ImageFolder(filename)

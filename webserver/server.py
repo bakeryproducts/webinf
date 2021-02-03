@@ -10,19 +10,16 @@ app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
 @app.route('/')
 def index():
-    p = Path('/mnt/data').absolute()
-    imgs, exts = [], ['*.tif', '*.tiff']
-    for ext in exts:
-        imgs.extend(p.rglob(ext)) 
-    
-    s = ''
+    p = Path(os.getenv('STORAGE')).absolute()
+    imgs_list, imgs, exts = [], [], ['*.tif', '*.tiff']
+    [imgs.extend(p.rglob(ext)) for ext in exts]
     for img in imgs:
         img_sub_path = str(img.relative_to(p))
-        re_img_sub_path = img_sub_path.replace('/', '__') # potomuchto.
-        url = f'<a href="view/' + re_img_sub_path + '">'+img_sub_path+'</a>'
-        s += url
-        s += '<br/>\n'
-    return s
+        imgs_list.append({
+            'ref': img_sub_path.replace('/', '__'), 
+            'name': img_sub_path
+        })
+    return render_template('index.html', imgs=imgs_list)
 
 @app.route("/view/<string:filename>")
 def ll(filename):
