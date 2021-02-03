@@ -5,6 +5,6 @@ include ${CONFIG}
 all: start
 start:
 	docker-compose -f ./docker-compose.yml --env-file ${CONFIG} up --build --detach
-stop:
-	docker-compose down
+stop: 
+	docker-compose kill 
 restart: stop start

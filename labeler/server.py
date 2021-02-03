@@ -13,17 +13,9 @@ app.config.update(TEMPLATES_AUTO_RELOAD=True)
 @app.route("/label/<string:filename>")
 def ann_selector(filename):
     filename = filename.replace('__', '/')
-    filename = Path('/mnt/data') / Path(filename).with_suffix('.json')
-    print(filename)
+    filename = Path('/mnt/data') / Path(filename)
     
-    if filename.exists(): 
-        if filename.is_dir():
-            raise NotImplemented
-        else: reader = PamReader(filename)
-    else:
-        print(f'filename is not valid: {filename}')
-        return None
-
+    reader = PamReader(filename)
     return ann_read(reader)
     
 def ann_read(reader):

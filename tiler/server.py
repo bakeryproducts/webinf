@@ -11,8 +11,7 @@ from readers import ImageFolder, BigImage
 app = Flask(__name__)
 app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
-@app.route("/tile/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
-def tile_selector(filename, x, y, zoom):
+def create_reader(filename):
     filename = filename.replace('__', '/')
     filename = Path('/mnt/data') / Path(filename)
     print(filename)
@@ -23,19 +22,28 @@ def tile_selector(filename, x, y, zoom):
     else:
         print(f'filename is not valid: {filename}')
         return None
+    return reader
 
-    return tile_read(reader,x,y,zoom)
+@app.route("/tile/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
+def tile_selector(filename, x, y, zoom):
+    reader = create_reader(filename)
+    data = reader.read_tile(x,y,zoom)
+    return send_image(data)
     
-def tile_read(reader,x,y,zoom):
-    data = reader(x,y,zoom)
+@app.route("/tile/<string:filename>/<int:zoom>_<int:l>_<int:t>_<int:r>_<int:b>")
+def raster_selector(filename, zoom, l,t,r,b):
+    reader = create_reader(filename)
+    data = reader.read_raster(l,t,r,b, zoom)
+    data[...,0] *=0
+    return send_image(data)
 
-    #print(reader.filename, data.shape, data.dtype)
+def send_image(data):
     img_bytes = io.BytesIO()
     im = Image.fromarray(data)
     im.convert('RGBA').save(img_bytes, format='PNG')
     img_bytes.seek(0, 0)
-
     return send_file(img_bytes, mimetype='image/png', as_attachment=False)
+
 
 if __name__ == "__main__":
     app.run()
