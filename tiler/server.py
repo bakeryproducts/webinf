@@ -1,5 +1,5 @@
 import io
-import argparse
+import os
 from PIL import Image
 from pathlib import Path
 
@@ -9,11 +9,11 @@ from flask import Flask, make_response, send_file
 from readers import ImageFolder, BigImage
 
 app = Flask(__name__)
+app.config.update(TEMPLATES_AUTO_RELOAD=True)
 
 def create_reader(filename):
     filename = filename.replace('__', '/')
-    filename = Path('/mnt/data') / Path(filename)
-    print(filename)
+    filename = Path(os.getenv('STORAGE')) / Path(filename)
     
     if filename.exists(): 
         if filename.is_dir(): reader = ImageFolder(filename)
@@ -45,8 +45,4 @@ def send_image(data):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--p', default='7051', help='port')
-    parser.add_argument('--h', default='0.0.0.0', help='host')
-    args = parser.parse_args()
-    app.run(host=args.h, port=args.p, debug=True)
+    app.run()

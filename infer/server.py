@@ -1,5 +1,5 @@
 import io
-import argparse
+#import argparse
 from pathlib import Path
 from PIL import Image
 import base64
@@ -34,8 +34,9 @@ def infer_processer(filename):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--p', default='7053', help='port')
-    parser.add_argument('--h', default='0.0.0.0', help='host')
-    args = parser.parse_args()
-    app.run(host=args.h, port=args.p)
+    #parser = argparse.ArgumentParser()
+    #parser.add_argument('--p', default='7053', help='port')
+    #parser.add_argument('--h', default='0.0.0.0', help='host')
+    #args = parser.parse_args()
+    #app.run(host=args.h, port=args.p)
+    app.run()

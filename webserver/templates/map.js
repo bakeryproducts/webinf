@@ -1,4 +1,4 @@
-var map = L.map('map',{crs: L.CRS.Simple});
+var map = L.map('full-size',{crs: L.CRS.Simple});
 map.setView([-30.0,30.0], 6);
 console.log('SANITY')
 var layer = L.tileLayer('http://{{TILE_HOST}}:{{TILE_PORT}}/tile/{{filename}}/{z}_{x}_{y}.png', {
