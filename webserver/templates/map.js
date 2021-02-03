@@ -61,17 +61,22 @@ $.ajax({
     url: '/label/{{filename}}',
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-    success: function(data){
-            data.forEach(function(e){
-                new L.Polyline(e, {
-                    color: 'red',
-                    weight: 3,
-                    opacity: 1,
-                    smoothFactor: 1
-                }) .addTo(map);
+    success: function(all_polys){
+            var colors = ['red','green','blue'];
+            var count = 0;
+            all_polys.forEach(function(polys){
+                var color = colors[count]
+                polys.forEach(function(e){
+                    new L.Polyline(e, {
+                        color: color,
+                        weight: 3,
+                        opacity: 1,
+                        smoothFactor: 1
+                    }) .addTo(map);
+                });
+                count +=1;
             });
-
-        },
+    },
     error: function(errMsg) {
         //alert(errMsg);
     }

@@ -22,7 +22,6 @@ services:
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
-
                 environment:
                         - PYTHONUNBUFFERED=1
         labeler:
@@ -36,6 +35,8 @@ services:
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
+                environment:
+                        - PYTHONUNBUFFERED=1
         infer:
                 build:
                         context: .
@@ -47,6 +48,8 @@ services:
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
+                environment:
+                        - PYTHONUNBUFFERED=1
         nginx:
                 build:
                         context: ./nginx
