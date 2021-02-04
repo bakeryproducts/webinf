@@ -13,49 +13,42 @@ function getBoxTiles(){
         cds = [],
         mod = Math.pow(2, zoom);
 
-    var i = Math.max(0, min.x);
-    var j = Math.max(0, min.y);
-    var x = (i % mod + mod) % mod;
-    var y = (j % mod + mod) % mod;
-    var coords = new L.Point(x, y);
-    coords.z = zoom;
-    cds.push([x,y]);
+    console.log(min.x, min.y, max.x, max.y)
 
-    var x = (max.x % mod + mod) % mod;
-    var y = (max.y % mod + mod) % mod;
-    var coords = new L.Point(x, y);
-    coords.z = zoom;
-    cds.push([x,y]);
-    return cds;
+    var l = Math.max(0, min.x);
+    var t = Math.max(0, min.y);
+    
+    // TODO right and bottom boundaries requieres max tile num, of W,H info... 
+    return [l,t,max.x, max.y];
 }
 
 function onKeyPressed(e) {
     console.log("Key", e);
     if (e.key === "i") {
         var filename = '{{filename}}';
-        var cds = getBoxTiles();
+        var [l,t,r,b] = getBoxTiles();
         var zoom = map.getZoom();
+        if (zoom >6){
+            return
+        }
+            
         mod = Math.pow(2, zoom);
-        var [r,b] = cds[1]
-        var [l,t] = cds[0]
-        r+=1;
-        b+=1;
+        s = 256/mod;
+        console.log(l,t,r,b, s, mod)
 
-        L.polyline([[-t*256/mod, l*256/mod], 
-                    [-t*256/mod, r*256/mod],
-                    [-b*256/mod, r*256/mod],
-                    [-b*256/mod, l*256/mod],
-                    [-t*256/mod, l*256/mod], 
-        ], {color:'red', weight: 2}).addTo(map);
+        L.polyline([[-t*s, l*s], 
+                    [-t*s, r*s],
+                    [-b*s, r*s],
+                    [-b*s, l*s],
+                    [-t*s, l*s], 
+        ], {color:'red', weight: 1}).addTo(map);
 
-        var url = `/infer/${filename}/${zoom}_${cds[0][0]}_${cds[0][1]}_${cds[1][0]}_${cds[1][1]}`;
-        imageBounds = [[-256*t/mod, l*256/mod], [-b*256/mod, r*256/mod]];
-        L.imageOverlay(url, imageBounds, {opacity:.7}).addTo(map).bringToFront();
+        var url = `/infer/${filename}/${zoom}_${l}_${t}_${r-1}_${b-1}`;
+        imageBounds = [[-t*s, l*s], [-b*s, r*s]];
+        L.imageOverlay(url, imageBounds, {opacity:1}).addTo(map).bringToFront();
 
     };
 };
-
-
 
 $.ajax({
     type: "GET",

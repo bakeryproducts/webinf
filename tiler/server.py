@@ -48,4 +48,4 @@ if __name__ == "__main__":
     parser.add_argument('--p', default='7051', help='port')
     parser.add_argument('--h', default='0.0.0.0', help='host')
     args = parser.parse_args()
-    app.run(host=args.h, port=args.p, debug=True)
+    app.run(host=args.h, port=args.p, debug=False)

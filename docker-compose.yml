@@ -45,10 +45,10 @@ services:
                 image: infer_wv                                                      
                 container_name: blazing_dmitriy
                 stdin_open: true
-                command: python3 /root/infer/server.py
+                command: python3 /root/infer/server.py --g '3'
                 volumes:
                         - ${STORAGE}:/mnt/data
-                restart: always
+                restart: 'no'
                 environment:
                         - PYTHONUNBUFFERED=1
                 ipc: 'host'
