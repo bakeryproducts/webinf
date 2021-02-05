@@ -33,7 +33,6 @@ class PamReader(_Annotation):
         for postfix in allowable_postfixes:
             filename = self.filename.with_suffix('')
             filename = str(filename) + postfix
-            print(filename)
             if Path(filename).exists():
                 polys.append(self._read_ann(filename))
 

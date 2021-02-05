@@ -1,7 +1,9 @@
 var map = L.map('map',{crs: L.CRS.Simple});
 map.setView([-30.0,30.0], 6);
-console.log('SANITY')
-var layer = L.tileLayer('http://{{TILE_HOST}}:{{TILE_PORT}}/tile/{{filename}}/{z}_{x}_{y}.png', {
+var local_url = document.location.origin;
+var s = `http:\/\/${local_url}:`;
+console.log(s, local_url);
+var layer = L.tileLayer(local_url + '/tile/{{filename}}/{z}_{x}_{y}.png', {
     maxZoom: 10,
     maxNativeZoom: 6,
 }).addTo(map);

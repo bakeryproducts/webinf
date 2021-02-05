@@ -8,6 +8,8 @@ from flask import Flask, make_response, send_file, jsonify, request, render_temp
 app = Flask(__name__)
 
 
+def log(m): print(m)
+
 @app.route('/')
 def index():
     p = Path('/mnt/data').absolute()
@@ -26,16 +28,10 @@ def index():
 
 @app.route("/view/<string:filename>")
 def ll(filename):
-    print(f'FILENAME: {filename}')
+    if app.debug: log(f'FILENAME: {filename}')
     global TILE_HOST 
     global TILE_PORT
     return render_template('ll_template.html', TILE_HOST=TILE_HOST, TILE_PORT=TILE_PORT, filename=filename)
-
-
-@app.route('/test')
-def testfn():    
-    data = request.get_json()
-    return jsonify({'thisis ':'answer'})  
 
 
 if __name__ == "__main__":
@@ -45,12 +41,13 @@ if __name__ == "__main__":
 
     parser.add_argument('--h', default='0.0.0.0', help='web server host')
     parser.add_argument('--p', default='7050', help='web server port')
+    parser.add_argument('--d', const=True, default=False, nargs='?', help='debug')
 
     args = parser.parse_args()
     TILE_HOST = args.th
     TILE_PORT = args.tp
 
-    app.run(host=args.h, port=args.p)
+    app.run(host=args.h, port=args.p, debug=args.d)
 
 
 

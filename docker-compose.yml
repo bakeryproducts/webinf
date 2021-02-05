@@ -4,10 +4,10 @@ services:
                 build:
                         context: .
                         dockerfile: ./webserver/Dockerfile
-                image: webserver_wv                                                     
-                container_name: crazy_alex
+                image: webserver_wv_${POSTFIX}
+                container_name: crazy_alex_${POSTFIX}
                 stdin_open: true
-                command: python3 /root/webserver/server.py 
+                command: python3 /root/webserver/server.py --tp ${NGX_PORT} --p ${WBS_PORT} --d
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
@@ -15,10 +15,10 @@ services:
                 build:
                         context: .
                         dockerfile: ./tiler/Dockerfile
-                image: tiler_wv                                                      
-                container_name: mighty_gleb
+                image: tiler_wv_${POSTFIX}                                                      
+                container_name: mighty_gleb_${POSTFIX}
                 stdin_open: true
-                command: python3 /root/tiler/server.py
+                command: python3 /root/tiler/server.py --p ${TIL_PORT}
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
@@ -28,10 +28,10 @@ services:
                 build:
                         context: .
                         dockerfile: ./labeler/Dockerfile
-                image: labeler_wv                                                      
-                container_name: sneaky_michael
+                image: labeler_wv_${POSTFIX}                                                      
+                container_name: sneaky_michael_${POSTFIX}
                 stdin_open: true
-                command: python3 /root/labeler/server.py
+                command: python3 /root/labeler/server.py --p ${LBL_PORT}
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
@@ -42,10 +42,10 @@ services:
                 build:
                         context: .
                         dockerfile: ./infer/Dockerfile
-                image: infer_wv                                                      
-                container_name: blazing_dmitriy
+                image: infer_wv_${POSTFIX}
+                container_name: blazing_dmitriy_${POSTFIX}
                 stdin_open: true
-                command: python3 /root/infer/server.py --g '3'
+                command: python3 /root/infer/server.py --g '3' --p ${INF_PORT} --tp ${TIL_PORT}
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: 'no'
@@ -56,11 +56,11 @@ services:
                 build:
                         context: ./nginx
                         dockerfile: ./Dockerfile
-                image: nginx_wv                                                      
-                container_name: inspiring_andrew
+                image: nginx_wv_${POSTFIX}                                                      
+                container_name: inspiring_andrew_${POSTFIX}
                 restart: always
                 ports:
-                        - 7088:80
+                        - ${NGX_PORT}:80
                 links:
                         - webserver
                         - tiler

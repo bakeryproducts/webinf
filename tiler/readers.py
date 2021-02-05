@@ -52,7 +52,6 @@ class BigImage(_Image):
         super().__init__(*args, **kwargs)
         self.dataset = rasterio.open(self.filename)#gdal.Open(str(self.filename), gdal.GA_ReadOnly)
         self.dims = self.dataset.width, self.dataset.height#[self.file.RasterXSize, self.file.RasterYSize]
-        print(self.dataset, self.dims)
 
     def check_borders(self, x,y,w,h, W,H):
         if x<0 or y<0 or x>W or y>H: raise OutOfBorder
