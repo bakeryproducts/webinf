@@ -9,8 +9,8 @@ import numpy as np
 
 class Inferencer:
     
-    def __init__(self, gpus='3', threshold=0.5, root='/root/infer/model'):
-        self.threshold = threshold
+    def __init__(self, gpus='0', threshold=0.5, root='/root/infer/model'):
+        self.threshold = float(threshold)
         os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
         os.environ['CUDA_VISIBLE_DEVICES']=gpus
         sys.path.append(root + '/src')
@@ -44,7 +44,7 @@ class Inferencer:
         torch.cuda.empty_cache()
         
         #out = cv2.resize(out, (H,W))
-        # Segmentation map will not have same dimensions as input. Can be daownscaled
+        # Segmentation map generally will not have same dimensions as input. Can be daownscaled
         # Leaflet will resize mask into shape anyway       
 
         out = out > self.threshold

@@ -29,8 +29,7 @@ def index():
 @app.route("/view/<string:filename>")
 def ll(filename):
     if app.debug: log(f'FILENAME: {filename}')
-    global TILE_HOST 
-    global TILE_PORT
+    global TILE_HOST, TILE_PORT
     return render_template('ll_template.html', TILE_HOST=TILE_HOST, TILE_PORT=TILE_PORT, filename=filename)
 
 
@@ -44,9 +43,7 @@ if __name__ == "__main__":
     parser.add_argument('--d', const=True, default=False, nargs='?', help='debug')
 
     args = parser.parse_args()
-    TILE_HOST = args.th
-    TILE_PORT = args.tp
-
+    TILE_HOST, TILE_PORT = args.th, args.tp
     app.run(host=args.h, port=args.p, debug=args.d)
 
 

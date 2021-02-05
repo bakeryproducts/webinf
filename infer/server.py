@@ -39,11 +39,12 @@ if __name__ == "__main__":
     parser.add_argument('--tp', default='7051', help='tiler port')
 
     parser.add_argument('--g', default='0', help='#gpu 1 2 1,2')
+    parser.add_argument('--t', default=.5, help='threshold')
     parser.add_argument('--d', const=True, default=False, nargs='?', help='debug')
     
     args = parser.parse_args()
     TILE_PORT = args.tp 
     TILE_HOST = 'tiler' # tiler host is local network, const
-    inf = Inferencer(gpus=args.g)
+    inf = Inferencer(gpus=args.g, threshold=args.t)
     
     app.run(host=args.h, port=args.p, debug=args.d)

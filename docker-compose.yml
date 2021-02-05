@@ -15,7 +15,7 @@ services:
                 build:
                         context: .
                         dockerfile: ./tiler/Dockerfile
-                image: tiler_wv_${POSTFIX}                                                      
+                image: tiler_wv_${POSTFIX}
                 container_name: mighty_gleb_${POSTFIX}
                 stdin_open: true
                 command: python3 /root/tiler/server.py --p ${TIL_PORT}
@@ -28,7 +28,7 @@ services:
                 build:
                         context: .
                         dockerfile: ./labeler/Dockerfile
-                image: labeler_wv_${POSTFIX}                                                      
+                image: labeler_wv_${POSTFIX}
                 container_name: sneaky_michael_${POSTFIX}
                 stdin_open: true
                 command: python3 /root/labeler/server.py --p ${LBL_PORT}
@@ -45,7 +45,7 @@ services:
                 image: infer_wv_${POSTFIX}
                 container_name: blazing_dmitriy_${POSTFIX}
                 stdin_open: true
-                command: python3 /root/infer/server.py --g '3' --p ${INF_PORT} --tp ${TIL_PORT}
+                command: python3 /root/infer/server.py --g '3' --p ${INF_PORT} --tp ${TIL_PORT} --t .9
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: 'no'
@@ -56,7 +56,7 @@ services:
                 build:
                         context: ./nginx
                         dockerfile: ./Dockerfile
-                image: nginx_wv_${POSTFIX}                                                      
+                image: nginx_wv_${POSTFIX}
                 container_name: inspiring_andrew_${POSTFIX}
                 restart: always
                 ports:
