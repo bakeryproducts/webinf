@@ -50,8 +50,9 @@ class _Image:
 class BigImage(_Image):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.dataset = rasterio.open(self.filename)#gdal.Open(str(self.filename), gdal.GA_ReadOnly)
-        self.dims = self.dataset.width, self.dataset.height#[self.file.RasterXSize, self.file.RasterYSize]
+        self.dataset = rasterio.open(self.filename)
+        self.dims = self.dataset.width, self.dataset.height
+        self.bands = list(range(1, 1+self.dataset.count))
 
     def check_borders(self, x,y,w,h, W,H):
         if x<0 or y<0 or x>W or y>H: raise OutOfBorder
@@ -60,7 +61,7 @@ class BigImage(_Image):
         return (x,y), (w,h)
 
     def _read_raster(self, x,y,w,h):
-        return self.dataset.read([1,2,3], window=((y,y+h),(x,x+w)))
+        return self.dataset.read(self.bands, window=((y,y+h),(x,x+w))) 
 
     def read_raster(self, l_tile, t_tile, r_tile, b_tile, zoom):
         (l, t), _, _ = self.convert_tile_idx(l_tile, t_tile, zoom)
