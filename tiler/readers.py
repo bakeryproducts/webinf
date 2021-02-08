@@ -60,14 +60,19 @@ class BigImage(_Image):
         h = min(h, H-y)
         return (x,y), (w,h)
 
-    def _read_raster(self, x,y,w,h):
-        return self.dataset.read(self.bands, window=((y,y+h),(x,x+w))) 
+    def _read_from_raster(self, x,y,w,h):
+        block = self.dataset.read(self.bands, window=((y,y+h),(x,x+w)))  
+        print(block.shape, self.bands)
+        if self.bands == [1]: 
+            block*=255
+            block = block.repeat(3,0)
+        return block 
 
-    def read_raster(self, l_tile, t_tile, r_tile, b_tile, zoom):
+    def read_image_part(self, l_tile, t_tile, r_tile, b_tile, zoom):
         (l, t), _, _ = self.convert_tile_idx(l_tile, t_tile, zoom)
         (r0, b0), (w,h), _ = self.convert_tile_idx(r_tile, b_tile, zoom)
         r, b = r0+w, b0+h
-        block = self._read_raster(l,t, r-l, b-t)
+        block = self._read_from_raster(l,t, r-l, b-t)
         block = block.transpose(1,2,0)
         return block
 
@@ -79,7 +84,7 @@ class BigImage(_Image):
         except OutOfBorder:
             return self.zero_tile()
 
-        block = self._read_raster(x,y,w,h)
+        block = self._read_from_raster(x,y,w,h)
         del self.dataset 
         block = block.transpose(1,2,0)
         block = self.resize(block, scale)

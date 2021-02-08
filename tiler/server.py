@@ -35,7 +35,7 @@ def tile_selector(filename, x, y, zoom):
 def raster_selector(filename, zoom, l,t,r,b):
     if app.debug: log(f'{filename}, {l}, {t}, {r}, {b}, {zoom}')
     reader = create_reader(filename)
-    data = reader.read_raster(l,t,r,b, zoom)
+    data = reader.read_image_part(l,t,r,b, zoom)
     if app.debug: log(f'Returning raster: {data.shape}, {data.dtype}, {data.max()}')
     return send_image(data)
 
