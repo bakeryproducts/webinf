@@ -85,6 +85,7 @@ class BigImage(_Image):
             return self.zero_tile()
 
         block = self._read_from_raster(x,y,w,h)
+        self.dataset.close()
         del self.dataset 
         block = block.transpose(1,2,0)
         block = self.resize(block, scale)

@@ -8,5 +8,5 @@ start:
 attach:
 	docker attach ${CONTAINER}
 stop: 
-	docker-compose kill 
+	docker-compose --env-file ${CONFIG} kill
 restart: stop start
