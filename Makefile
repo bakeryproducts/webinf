@@ -4,7 +4,11 @@ include ${CONFIG}
 
 all: start 
 start:
-	docker-compose -f ./docker-compose.yml --env-file ${CONFIG} up --build  --detach
+	docker-compose --env-file ${CONFIG} up webserver tiler nginx
+start-all:
+	docker-compose --env-file ${CONFIG} up 
+build:
+	docker-compose --env-file ${CONFIG} build
 attach:
 	docker attach ${CONTAINER}
 stop: 
