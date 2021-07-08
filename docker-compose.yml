@@ -7,7 +7,7 @@ services:
                 image: webserver_wv_${POSTFIX}
                 container_name: crazy_alex_${POSTFIX}
                 stdin_open: true
-                command: python3 /root/webserver/server.py --tp ${NGX_PORT} --p ${WBS_PORT} --d
+                command: python3 /root/webserver/server.py 
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
@@ -18,7 +18,8 @@ services:
                 image: tiler_wv_${POSTFIX}
                 container_name: mighty_gleb_${POSTFIX}
                 stdin_open: true
-                command: python3 /root/tiler/server.py --p ${TIL_PORT}
+                command: python3 /root/tiler/server.py 
+                #command: uwsgi --ini /root/tiler/uwsgi.ini
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
@@ -31,7 +32,7 @@ services:
                 image: labeler_wv_${POSTFIX}
                 container_name: sneaky_michael_${POSTFIX}
                 stdin_open: true
-                command: python3 /root/labeler/server.py --p ${LBL_PORT}
+                command: python3 /root/labeler/server.py 
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always

@@ -4,24 +4,45 @@ from PIL import Image
 from pathlib import Path
 
 import numpy as np
-from flask import Flask, make_response, send_file
+from flask import Flask, make_response, send_file, send_from_directory
 
-from readers import ImageFolder, BigImage
+from readers import ImageFolder, BigImage, CsvReader
 
 app = Flask(__name__)
+readers = {}
 
 def log(m): print(m)
 
 def create_reader(filename):
+    global readers
+
     filename = filename.replace('__', '/')
-    filename = Path('/mnt/data') / Path(filename)
+    prefix = Path('/mnt/data')
+    filename =  prefix / Path(filename)
+
+    if filename in readers: return readers[filename]
+
     if filename.exists(): 
         if filename.is_dir(): reader = ImageFolder(filename)
-        else: reader = BigImage(filename)
+        elif filename.suffix == '.tiff' or filename.suffix == '.tif': reader = BigImage(filename)
+        elif filename.suffix == '.csv': 
+            reader = CsvReader(filename, prefix=prefix)
+            readers[filename] = reader
     else:
-        print(f'filename is not valid: {filename}')
+        log(f'filename is not valid: {filename}')
         return None
+
     return reader
+
+@app.route("/tile/embtile/<string:filename>/<int:zoom>_<int:x>_<int:y>")
+def emb_selector(filename, zoom, x, y):
+    if app.debug: log(f'emb q {filename}, {x}, {y}, {zoom}')
+    reader = create_reader(filename)
+    img_name = reader.get_img_from_xyz(x,y,zoom)
+    if app.debug: log(f'EMBTILE {img_name}')
+    return send_file(img_name, mimetype='image/png', as_attachment=False)
+    #return send_from_directory(UPLOAD_FOLDER, os.path.join(project_name, dataset_name, image_name, str(image_zoom), image_part), mimetype='application/octet-stream')
+
 
 @app.route("/tile/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
 def tile_selector(filename, x, y, zoom):
@@ -48,10 +69,9 @@ def send_image(data):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--p', default='7051', help='port')
-    parser.add_argument('--h', default='0.0.0.0', help='host')
     parser.add_argument('--d', const=True, default=False, nargs='?', help='debug')
     args = parser.parse_args()
-    app.run(host=args.h, port=args.p, debug=args.d)
+    host, port = '0.0.0.0', 5000
+    app.run(host=host, port=port, debug=args.d)
 
 

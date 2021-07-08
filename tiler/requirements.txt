@@ -4,3 +4,8 @@ Pillow
 Flask
 GDAL==2.2.3
 rasterio
+pandas
+
+Werkzeug~=1.0.1
+uwsgi
+PyJWT

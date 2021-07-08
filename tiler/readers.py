@@ -3,6 +3,7 @@ from pathlib import Path
 import cv2
 import gdal
 import numpy as np
+import pandas as pd
 
 import rasterio
 
@@ -91,6 +92,33 @@ class BigImage(_Image):
         block = self.resize(block, scale)
         return block
 
+class CsvReader:
+    def __init__(self, filename, prefix):
+        self.filename = filename
+        self.prefix = prefix
+        self.matr = self.create_matr(filename)
+        
+    def create_matr(self, filename):
+        df = pd.read_csv(str(filename), index_col=0)
+        x_size = df.iloc[:,0].max()
+        s = np.zeros((x_size+1, x_size+1), dtype=np.object_)
+
+        #prefix = '/data/home/sokolov/work/docker_workspace/workspace/'
+        prefix = self.prefix / 'termit_test/'
+        for i,r in df.iterrows():
+            s[r['x']][r['y']] = str(prefix / i[51:])
+        return s
+
+    def get_img_from_xyz(self, x,y, zoom):
+        try:
+            tilename = self.matr[x][y]
+        except Exception as e:
+            print(e)
+            return self.matr[0][0]
+
+        assert tilename != 0, tilename
+
+        return tilename
 
 class ImageFolder:
     def __init__(self, filename):
