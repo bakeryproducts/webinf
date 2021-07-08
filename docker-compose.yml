@@ -18,8 +18,6 @@ services:
                 image: tiler_wv_${POSTFIX}
                 container_name: TILE_${POSTFIX}
                 stdin_open: true
-                #command: python3 /root/tiler/server.py 
-                #command: uwsgi --ini /root/tiler/uwsgi.ini
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always

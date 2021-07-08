@@ -39,7 +39,7 @@ def emb_selector(filename, zoom, x, y):
     if app.debug: log(f'emb q {filename}, {x}, {y}, {zoom}')
     reader = create_reader(filename)
     img_name = reader.get_img_from_xyz(x,y,zoom)
-    #log(f'EMBTILE {img_name}')
+    if app.debug: log(f'EMBTILE {img_name}')
     #return send_file(img_name, mimetype='image/png', as_attachment=False)
     return Response(mimetype='image/png', headers=[('X-Accel-Redirect', f'/storage/{img_name}')])
 
