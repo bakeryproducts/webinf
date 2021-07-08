@@ -4,7 +4,7 @@ from PIL import Image
 from pathlib import Path
 
 import numpy as np
-from flask import Flask, make_response, send_file, send_from_directory
+from flask import Flask, make_response, send_file, send_from_directory, Response
 
 from readers import ImageFolder, BigImage, CsvReader
 
@@ -26,7 +26,7 @@ def create_reader(filename):
         if filename.is_dir(): reader = ImageFolder(filename)
         elif filename.suffix == '.tiff' or filename.suffix == '.tif': reader = BigImage(filename)
         elif filename.suffix == '.csv': 
-            reader = CsvReader(filename, prefix=prefix)
+            reader = CsvReader(filename, prefix='')
             readers[filename] = reader
     else:
         log(f'filename is not valid: {filename}')
@@ -39,9 +39,9 @@ def emb_selector(filename, zoom, x, y):
     if app.debug: log(f'emb q {filename}, {x}, {y}, {zoom}')
     reader = create_reader(filename)
     img_name = reader.get_img_from_xyz(x,y,zoom)
-    if app.debug: log(f'EMBTILE {img_name}')
-    return send_file(img_name, mimetype='image/png', as_attachment=False)
-    #return send_from_directory(UPLOAD_FOLDER, os.path.join(project_name, dataset_name, image_name, str(image_zoom), image_part), mimetype='application/octet-stream')
+    #log(f'EMBTILE {img_name}')
+    #return send_file(img_name, mimetype='image/png', as_attachment=False)
+    return Response(mimetype='image/png', headers=[('X-Accel-Redirect', f'/storage/{img_name}')])
 
 
 @app.route("/tile/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")

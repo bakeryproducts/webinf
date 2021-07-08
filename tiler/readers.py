@@ -104,7 +104,8 @@ class CsvReader:
         s = np.zeros((x_size+1, x_size+1), dtype=np.object_)
 
         #prefix = '/data/home/sokolov/work/docker_workspace/workspace/'
-        prefix = self.prefix / 'termit_test/'
+        #prefix = self.prefix / 'termit_test/'
+        prefix =  Path('termit_test/')
         for i,r in df.iterrows():
             s[r['x']][r['y']] = str(prefix / i[51:])
         return s
