@@ -7,10 +7,12 @@ services:
                 image: webserver_wv_${POSTFIX}
                 container_name: WEB_${POSTFIX}
                 stdin_open: true
-                command: python3 /root/webserver/server.py 
+                command: python3 /webserver/server.py 
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
+                environment:
+                        - PYTHONUNBUFFERED=1
         tiler:
                 build:
                         context: .
@@ -18,6 +20,7 @@ services:
                 image: tiler_wv_${POSTFIX}
                 container_name: TILE_${POSTFIX}
                 stdin_open: true
+                #command: python3 /tiler/server.py 
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always

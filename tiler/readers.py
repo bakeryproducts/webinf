@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import cv2
@@ -92,22 +93,25 @@ class BigImage(_Image):
         block = self.resize(block, scale)
         return block
 
-class CsvReader:
+class JsonReader:
     def __init__(self, filename, prefix):
         self.filename = filename
         self.prefix = prefix
         self.matr = self.create_matr(filename)
         
     def create_matr(self, filename):
-        df = pd.read_csv(str(filename), index_col=0)
-        x_size = df.iloc[:,0].max()
+        with open(str(filename), 'r') as f:
+            data = json.load(f)
+
+        df = pd.read_csv(str(filename.parent / data['proj']))
+        x_size = df['x'].max()
         s = np.zeros((x_size+1, x_size+1), dtype=np.object_)
 
         #prefix = '/data/home/sokolov/work/docker_workspace/workspace/'
         #prefix = self.prefix / 'termit_test/'
         prefix =  Path('termit_test/')
         for i,r in df.iterrows():
-            s[r['x']][r['y']] = str(prefix / i[51:])
+            s[r['x']][r['y']] = str(prefix / r['fn'])
         return s
 
     def get_img_from_xyz(self, x,y, zoom):
@@ -120,6 +124,7 @@ class CsvReader:
         assert tilename != 0, tilename
 
         return tilename
+
 
 class ImageFolder:
     def __init__(self, filename):
