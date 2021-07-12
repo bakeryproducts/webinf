@@ -18,7 +18,7 @@ services:
                         context: .
                         dockerfile: ./tiler/Dockerfile
                 image: tiler_wv_${POSTFIX}
-                container_name: TILE_${POSTFIX}
+                container_name: TIL_${POSTFIX}
                 stdin_open: true
                 #command: python3 /tiler/server.py 
                 volumes:
@@ -34,6 +34,19 @@ services:
                 container_name: LABEL_${POSTFIX}
                 stdin_open: true
                 command: python3 /root/labeler/server.py 
+                volumes:
+                        - ${STORAGE}:/mnt/data
+                restart: always
+                environment:
+                        - PYTHONUNBUFFERED=1
+        ember:
+                build:
+                        context: .
+                        dockerfile: ./ember/Dockerfile
+                image: ember_wv_${POSTFIX}
+                container_name: EMB_${POSTFIX}
+                stdin_open: true
+                command: python3 /ember/server.py 
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
@@ -73,3 +86,4 @@ services:
                         - webserver
                         - tiler
                         - labeler
+                        - ember
