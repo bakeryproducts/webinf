@@ -1,3 +1,7 @@
 Flask
 numpy
 pandas
+scipy
+scikit-learn
+lapjv
+pillow

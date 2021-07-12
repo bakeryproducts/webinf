@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<head>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<style>
+    body {
+        padding: 0;
+        margin: 0;
+    }
+    html, body, #map {
+        height: 100%;
+        width: 100%;
+    }
+</style>
+</head>
+
+<body>
+    <form action="/ember/gen/{{filename}}" method="POST">
+      <label for="N">Side size, in images, &lt;40: </label>
+      <input type="text" id="N" name="N" value="10"><br><br>
+
+      <label for="tile_name">Key tile name: </label>
+      <input type="text" id="tile_name" name="tile_name" value=""><br><br> 
+
+      <label for="metric">Metric: </label><br>
+
+      <input type="radio" id="euclidean" name="metric" value="euclidean">
+      <label for="euclidean">euclidean</label><br> 
+      <input type="radio" id="sqeuclidean" name="metric" value="sqeuclidean" checked>
+      <label for="sqeuclidean">sqeuclidean</label><br>
+      <input type="radio" id="cityblock" name="metric" value="cityblock">
+      <label for="cityblock">cityblock</label><br>
+      <input type="radio" id="cosine" name="metric" value="cosine">
+      <label for="cosine">cosine</label><br>
+      <input type="radio" id="hamming" name="metric" value="hamming">
+      <label for="hamming">hamming</label><br>
+      <input type="radio" id="mahalanobis" name="metric" value="mahalanobis">
+      <label for="mahalanobis">mahalanobis</label><br>
+      <input type="radio" id="dice" name="metric" value="dice">
+      <label for="dice">dice</label><br>
+      <input type="radio" id="jaccard" name="metric" value="jaccard">
+      <label for="jaccard">jaccard</label><br>
+      <input type="radio" id="jensenshannon" name="metric" value="jensenshannon">
+      <label for="jensenshannon">jensenshannon</label><br>
+
+
+      <br>
+      <label for="_path">path: </label>
+      <input type="text" id="_path" name="_path" value="{{filename}}"><br><br> 
+
+      <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

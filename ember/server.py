@@ -7,13 +7,41 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from flask import Flask, request, render_template, abort, redirect, url_for
 
-from flask import Flask, make_response, send_file, jsonify, request, render_template
+from projector import generate_projection
+
 
 app = Flask(__name__)
 
-
 def log(m): print(m)
+
+@app.route("/ember/gen/<path:filename>", methods=['POST', 'GET'])
+def post_em(filename):
+    if request.method == 'POST':
+        prefix = Path('/mnt/data')
+        fn = urllib.parse.unquote(filename)
+
+
+        N = int(request.form.get('N', 10)) ** 2
+        tile_name = request.form.get('tile_name', None)
+        selector = 'nearest' if tile_name else 'rand'
+        metric = request.form.get('metric', None)
+        path = generate_projection(src=prefix/fn, 
+                                    n=N,
+                                    tile_size=128, 
+                                    path_prefix=Path(fn).parent, 
+                                    proj_name=None,
+                                    metric=metric,
+                                    selector=selector, 
+                                    key_name=tile_name)
+
+        path = path.relative_to(prefix)
+
+        url = url_for('.ember', filename=path, _external=True)
+        return redirect(url)
+    else:
+        return render_template('embedding_start.html', filename=filename)
 
 
 @app.route("/ember/<path:filename>")
@@ -70,7 +98,6 @@ def ember(filename):
             polys.append(d)
 
     return render_template('embedding_template.html', WIDTH=WIDTH, HEIGHT=HEIGHT, polys=polys, filename=filename)
-
 
 
 

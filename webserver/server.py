@@ -18,8 +18,8 @@ def index():
     redir = {
             '*.tif': 'view',
             '*.tiff': 'view',
-            '*.emb': 'err',
-            'emb.json': 'ember',
+            '*.emb': 'ember/gen',
+            'prj.json': 'ember',
             }
 
     files = []
@@ -27,11 +27,12 @@ def index():
         files.append(p.rglob(ext)) 
 
     s = ''
-    for fns, sub_url in zip(files, redir.values()):
-        for fn in fns:
+    for fns, ext in zip(files, redir):
+        s+=f'<h2>{ext}</h2>'
+        for fn in sorted(fns):
             fn_sub_path = str(fn.relative_to(p))
             re_fn_sub_path = urllib.parse.quote(fn_sub_path, safe='')
-            url = f'<a href="{sub_url}/' + re_fn_sub_path + '">'+fn_sub_path+'</a>'
+            url = f'<a href="{redir[ext]}/' + re_fn_sub_path + '">'+fn_sub_path+'</a>'
             s += url
             s += '<br/>\n'
 
