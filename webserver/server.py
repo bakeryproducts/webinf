@@ -1,5 +1,6 @@
 import io
 import json
+import urllib
 import random
 import argparse
 from pathlib import Path
@@ -17,40 +18,38 @@ def log(m): print(m)
 @app.route('/')
 def index():
     p = Path('/mnt/data').absolute()
-    imgs, exts = [], ['*.tif', '*.tiff']
-    for ext in exts:
-        imgs.extend(p.rglob(ext)) 
+    redir = {
+            '*.tif': 'view',
+            '*.tiff': 'view',
+            '*.emb': 'err',
+            'emb.json': 'emb',
+            }
+
+    files = []
+    for ext in redir:
+        files.append(p.rglob(ext)) 
 
     s = ''
-    for img in imgs:
-        img_sub_path = str(img.relative_to(p))
-        re_img_sub_path = img_sub_path.replace('/', '__') # potomuchto.
-        url = f'<a href="view/' + re_img_sub_path + '">'+img_sub_path+'</a>'
-        s += url
-        s += '<br/>\n'
+    for fns, sub_url in zip(files, redir.values()):
+        for fn in fns:
+            fn_sub_path = str(fn.relative_to(p))
+            re_fn_sub_path = urllib.parse.quote(fn_sub_path, safe='')
+            url = f'<a href="{sub_url}/' + re_fn_sub_path + '">'+fn_sub_path+'</a>'
+            s += url
+            s += '<br/>\n'
 
-    files, exts = [], ['emb.json']
-    for ext in exts:
-        files.extend(p.rglob(ext)) 
-
-    for ff in files:
-        img_sub_path = str(ff.relative_to(p))
-        re_img_sub_path = img_sub_path.replace('/', '__') # potomuchto.
-        url = f'<a href="emb/' + re_img_sub_path + '">'+img_sub_path+'</a>'
-        s += url
-        s += '<br/>\n'
     return s
 
-@app.route("/view/<string:filename>")
+@app.route("/view/<path:filename>")
 def viewer(filename):
     if app.debug: log(f'FILENAME: {filename}')
     return render_template('view_template.html', filename=filename)
 
-@app.route("/emb/<string:filename>")
+@app.route("/emb/<path:filename>")
 def ember(filename):
     if app.debug: log(f'FILENAME: {filename}')
+    fn = urllib.parse.unquote(filename)
 
-    fn = filename.replace('__', '/')
     prefix = Path('/mnt/data')
     with open(str(prefix/fn), 'r') as f:
         data = json.load(f)

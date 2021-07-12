@@ -34,7 +34,7 @@ def create_reader(filename):
 
     return reader
 
-@app.route("/tile/embtile/<string:filename>/<int:zoom>_<int:x>_<int:y>")
+@app.route("/tile/embtile/<path:filename>/<int:zoom>_<int:x>_<int:y>")
 def emb_selector(filename, zoom, x, y):
     if app.debug: log(f'emb q {filename}, {x}, {y}, {zoom}')
     reader = create_reader(filename)
@@ -43,8 +43,7 @@ def emb_selector(filename, zoom, x, y):
     #return send_file(img_name, mimetype='image/png', as_attachment=False)
     return Response(mimetype='image/png', headers=[('X-Accel-Redirect', f'/storage/{img_name}')])
 
-
-@app.route("/tile/<string:filename>/<int:zoom>_<int:x>_<int:y>.png")
+@app.route("/tile/<path:filename>/<int:zoom>_<int:x>_<int:y>.png")
 def tile_selector(filename, x, y, zoom):
     if app.debug: log(f'{filename}, {x}, {y}, {zoom}')
     reader = create_reader(filename)
@@ -52,7 +51,7 @@ def tile_selector(filename, x, y, zoom):
     if app.debug: log(f'Returning raster: {data.shape}, {data.dtype}, {data.max()}')
     return send_image(data)
     
-@app.route("/tile/<string:filename>/<int:zoom>_<int:l>_<int:t>_<int:r>_<int:b>")
+@app.route("/tile/<path:filename>/<int:zoom>_<int:l>_<int:t>_<int:r>_<int:b>")
 def raster_selector(filename, zoom, l,t,r,b):
     if app.debug: log(f'{filename}, {l}, {t}, {r}, {b}, {zoom}')
     reader = create_reader(filename)
@@ -66,6 +65,8 @@ def send_image(data):
     im.convert('RGB').save(img_bytes, format='PNG')
     img_bytes.seek(0, 0)
     return send_file(img_bytes, mimetype='image/png', as_attachment=False)
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
