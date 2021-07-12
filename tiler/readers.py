@@ -107,9 +107,7 @@ class JsonReader:
         x_size = df['x'].max()
         s = np.zeros((x_size+1, x_size+1), dtype=np.object_)
 
-        #prefix = '/data/home/sokolov/work/docker_workspace/workspace/'
-        #prefix = self.prefix / 'termit_test/'
-        prefix =  Path('termit_test/')
+        prefix =  Path(data.get('path_prefix', ''))
         for i,r in df.iterrows():
             s[r['x']][r['y']] = str(prefix / r['fn'])
         return s
