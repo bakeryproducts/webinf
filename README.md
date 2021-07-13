@@ -9,6 +9,7 @@ Tile viewer for images, based on leaflet, GDAL, flask and docker
  - heatmap for distance?
  - inverse neighbouring, most distant objects
  - fix for cosine dist 
+ - embedder readme
 
 
 # Dependencies
