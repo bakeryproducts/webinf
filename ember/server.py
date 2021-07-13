@@ -89,16 +89,17 @@ def convert_polys(polys, data, label=None, **kwargs):
     for i,j,p in polys:
         #color = np.random.randint(0,255,3)
         idx = (data['x'] == i) & (data['y'] == j)
-        if label is not None:
-
-            color = plt.cm.jet(255*data.loc[idx][label].values[0])[:-1]  
+        if label is None:
+            color = 'tomato'
+            message = data.loc[idx]['fn'].values[0]
+        else:
+            color_float = data.loc[idx][label].values[0]
+            color = plt.cm.jet(float(color_float))[:-1]  
             color = [int(c*255) for c in color]
             color = f'rgb{tuple(color)}'
-        else:
-            color = 'tomato'
+            message = str(color_float)
 
         js_poly_args = get_js_poly_args(color=color, **kwargs)
-        message = data.loc[idx]['fn'].values[0]
 
         d = {
                 'points': p,

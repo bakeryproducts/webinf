@@ -104,6 +104,7 @@ def generate_projection(src, n, tile_size, path_prefix='', proj_name=None, metri
         xx = xy
 
     df = pd.DataFrame(xx, columns=['x', 'y', *ks], index=idxs)
+    df[['x', 'y']] = df[['x', 'y']].astype(int)
     df['fn'] = filenames
 
     d = {
