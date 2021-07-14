@@ -18,11 +18,17 @@
 
 <body>
     <form action="/ember/gen/{{filename}}" method="POST">
-      <label for="N">Side size, in images, &lt;40: </label>
-      <input type="text" id="N" name="N" value="10"><br><br>
+      <input type="text" id="data_path" name="data_path" value="{{def_data_path}}">
+      <label for="data_path">Path to data folder, relative to mount point: </label><br>
 
-      <label for="tile_name">Key tile name: </label>
-      <input type="text" id="tile_name" name="tile_name" value=""><br><br> 
+      <input type="text" id="proj_name" name="proj_name" value="">
+      <label for="proj_name">Projection name: </label><br>
+
+      <input type="text" id="N" name="N" value="{{def_N}}">
+      <label for="N">Side size, in images, &lt;40: </label><br>
+
+      <input type="text" id="tile_name" name="tile_name" value="">
+      <label for="tile_name">Key tile name: </label><br>
 
       <label for="metric">Metric: </label><br>
 
@@ -44,11 +50,9 @@
       <label for="jaccard">jaccard</label><br>
       <input type="radio" id="jensenshannon" name="metric" value="jensenshannon">
       <label for="jensenshannon">jensenshannon</label><br>
-
-
       <br>
-      <label for="_path">path: </label>
-      <input type="text" id="_path" name="_path" value="{{filename}}"><br><br> 
+
+
 
       <input type="submit" value="Submit">
     </form>

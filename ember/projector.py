@@ -68,11 +68,12 @@ def nearest_select(embeddings, filenames, n, key_name):
     return embeddings[idxs], filenames[idxs], idxs
 
 
-def generate_projection(src, n, tile_size, path_prefix='', proj_name=None, metric='euclidean', selector='rand', **kwargs):
+def generate_projection(src, n, tile_size, data_path='', proj_name='new_proj', metric='euclidean', selector='rand', **kwargs):
     N_SUB = n
     METRIC = metric
     TILE_SIZE = tile_size
-    proj_dst = src / (f'{N_SUB}_' + '{:%b_%d_%H_%M_%S}'.format(datetime.datetime.now())) if proj_name is None else proj_name
+    src = Path(src)
+    proj_dst = src / proj_name
     proj_dst.mkdir()
 
     embeddings = np.load(str(src/'e.npy'))
@@ -114,7 +115,7 @@ def generate_projection(src, n, tile_size, path_prefix='', proj_name=None, metri
         'height':TILE_SIZE*int(N_SUB**.5),
         'lap_metric':METRIC,
         'tile_size':TILE_SIZE,
-        'path_prefix': str(path_prefix),
+        'data_path': str(data_path),
     }
 
     df.to_csv(str(proj_dst / 'proj.csv'))

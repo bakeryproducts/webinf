@@ -107,9 +107,9 @@ class JsonReader:
         x_size = df['x'].max()
         s = np.zeros((x_size+1, x_size+1), dtype=np.object_)
 
-        prefix =  Path(data.get('path_prefix', ''))
+        data_path = Path(data.get('data_path', ''))
         for i,r in df.iterrows():
-            s[r['x']][r['y']] = str(prefix / r['fn'])
+            s[r['x']][r['y']] = str(data_path / r['fn'])
         return s
 
     def get_img_from_xyz(self, x,y, zoom):
