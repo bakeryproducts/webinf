@@ -47,6 +47,47 @@ class _Image:
         t[:hh,:ww,:] = block
         return t
 
+class SmallImage(_Image):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.dataset = cv2.imread(str(self.filename)) # HWC
+        self.dims = self.dataset.shape[1], self.dataset.shape[0], 
+        self.bands = list(range(1, 1+self.dataset.shape[-1]))
+
+    def check_borders(self, x,y,w,h, W,H):
+        if x<0 or y<0 or x>=W or y>=H: raise OutOfBorder
+        w = min(w, W-x)
+        h = min(h, H-y)
+        return (x,y), (w,h)
+
+    def _read_from_raster(self, x,y,w,h):
+        #block = self.dataset.read(self.bands, window=((y,y+h),(x,x+w)))  
+        block = self.dataset[y:y+h, x:x+w, :]
+        if self.bands == [1]: 
+            block*=255
+            block = block.repeat(3,-1)
+        return block 
+
+    def read_image_part(self, l_tile, t_tile, r_tile, b_tile, zoom):
+        (l, t), _, _ = self.convert_tile_idx(l_tile, t_tile, zoom)
+        (r0, b0), (w,h), _ = self.convert_tile_idx(r_tile, b_tile, zoom)
+        r, b = r0+w, b0+h
+        block = self._read_from_raster(l,t, r-l, b-t)
+        block = cv2.cvtColor(block, cv2.COLOR_BGR2RGB)
+        return block
+
+    def read_tile(self, x_tile, y_tile, zoom):
+        # called (in mp) after set_tile
+        (x,y), (w,h), scale = self.convert_tile_idx(x_tile, y_tile, zoom)
+        try:
+            (x,y), (w,h) = self.check_borders(x,y,w,h,*self.dims)
+        except OutOfBorder:
+            return self.zero_tile()
+
+        block = self._read_from_raster(x,y,w,h)
+        block = cv2.cvtColor(block, cv2.COLOR_BGR2RGB)
+        block = self.resize(block, scale)
+        return block
 
 
 class BigImage(_Image):
@@ -91,6 +132,10 @@ class BigImage(_Image):
         del self.dataset 
         block = block.transpose(1,2,0)
         block = self.resize(block, scale)
+        print("\t\t\tTILE:", block.shape, block.dtype)
+        if block.dtype == np.uint16:
+            block = block / 65535 * 255
+            block = block.astype(np.uint8)
         return block
 
 class JsonReader:

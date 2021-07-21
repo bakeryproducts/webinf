@@ -18,6 +18,8 @@ def index():
     redir = {
             '*.tif': 'view',
             '*.tiff': 'view',
+            '*.jpg': 'view',
+            '*.jpeg': 'view',
             '*.emb': 'ember/gen',
             'prj.json': 'ember',
             }

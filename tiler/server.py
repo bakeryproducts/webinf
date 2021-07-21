@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 from flask import Flask, make_response, send_file, send_from_directory, Response
 
-from readers import ImageFolder, BigImage, JsonReader
+from readers import ImageFolder, BigImage, JsonReader, SmallImage
 
 app = Flask(__name__)
 readers = {}
@@ -25,6 +25,7 @@ def create_reader(filename):
     if filename.exists(): 
         if filename.is_dir(): reader = ImageFolder(filename)
         elif filename.suffix == '.tiff' or filename.suffix == '.tif': reader = BigImage(filename)
+        elif filename.suffix == '.jpeg' or filename.suffix == '.jpg': reader = SmallImage(filename)
         elif filename.suffix == '.json': 
             reader = JsonReader(filename, prefix='')
             readers[filename] = reader
