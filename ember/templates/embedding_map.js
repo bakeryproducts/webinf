@@ -12,7 +12,7 @@ let baselayer = L.tileLayer( local_url + ':{s}/tile/embtile/{{filename}}/{z}_{x}
     maxNativeZoom: 6,
     minNativeZoom: 6,
     tileSize: 128,
-    subdomains: ['7034', '7035', '7036', '7037'],
+    subdomains: ['7035', '7036', '7037'],
     bounds: bounds,
 });
 

@@ -33,40 +33,40 @@ services:
                 image: labeler_wv_${POSTFIX}
                 container_name: LABEL_${POSTFIX}
                 stdin_open: true
-                command: python3 /root/labeler/server.py 
+                command: python3 /root/labeler/server.py
                 volumes:
                         - ${STORAGE}:/mnt/data
                 restart: always
                 environment:
                         - PYTHONUNBUFFERED=1
-        ember:
-                build:
-                        context: .
-                        dockerfile: ./ember/Dockerfile
-                image: ember_wv_${POSTFIX}
-                container_name: EMB_${POSTFIX}
-                stdin_open: true
-                command: python3 /ember/server.py 
-                volumes:
-                        - ${STORAGE}:/mnt/data
-                restart: always
-                environment:
-                        - PYTHONUNBUFFERED=1
-        infer:
-                runtime: nvidia
-                build:
-                        context: .
-                        dockerfile: ./infer/Dockerfile
-                image: infer_wv_${POSTFIX}
-                container_name: INFER_${POSTFIX}
-                stdin_open: true
-                command: python3 /root/infer/server.py --g '3' --p ${INF_PORT} --tp ${TIL_PORT} --t .9
-                volumes:
-                        - ${STORAGE}:/mnt/data
-                restart: 'no'
-                environment:
-                        - PYTHONUNBUFFERED=1
-                ipc: 'host'
+        # ember:
+        #         build:
+        #                 context: .
+        #                 dockerfile: ./ember/Dockerfile
+        #         image: ember_wv_${POSTFIX}
+        #         container_name: EMB_${POSTFIX}
+        #         stdin_open: true
+        #         command: python3 /ember/server.py 
+        #         volumes:
+        #                 - ${STORAGE}:/mnt/data
+        #         restart: always
+        #         environment:
+        #                 - PYTHONUNBUFFERED=1
+        # infer:
+        #         runtime: nvidia
+        #         build:
+        #                 context: .
+        #                 dockerfile: ./infer/Dockerfile
+        #         image: infer_wv_${POSTFIX}
+        #         container_name: INFER_${POSTFIX}
+        #         stdin_open: true
+        #         command: python3 /root/infer/server.py --g '3' --p ${INF_PORT} --tp ${TIL_PORT} --t .9
+        #         volumes:
+        #                 - ${STORAGE}:/mnt/data
+        #         restart: 'no'
+        #         environment:
+        #                 - PYTHONUNBUFFERED=1
+        #         ipc: 'host'
         nginx:
                 build:
                         context: ./nginx
@@ -78,7 +78,6 @@ services:
                         - ${STORAGE}:/mnt/data
                 ports:
                         - ${NGX_PORT}:80
-                        - 7034:80
                         - 7035:80
                         - 7036:80
                         - 7037:80
@@ -86,4 +85,4 @@ services:
                         - webserver
                         - tiler
                         - labeler
-                        - ember
+                        # - ember

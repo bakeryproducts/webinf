@@ -52,6 +52,7 @@ function onKeyPressed(e) {
     };
 };
 
+console.log('{{filename}}');
 $.ajax({
     type: "GET",
     url: '/label/{{filename}}',

@@ -6,27 +6,30 @@ from pathlib import Path
 import numpy as np
 from flask import Flask, make_response, send_file, send_from_directory, Response
 
-from readers import ImageFolder, BigImage, JsonReader, SmallImage
+from readers import ImageFolder, BigImage, JsonReader, SmallImage, SVSImage
 
 app = Flask(__name__)
 readers = {}
 
+
 def log(m): print(m)
+
 
 def create_reader(filename):
     global readers
 
     filename = filename.replace('__', '/')
     prefix = Path('/mnt/data')
-    filename =  prefix / Path(filename)
+    filename = prefix / Path(filename)
 
     if filename in readers: return readers[filename]
 
-    if filename.exists(): 
+    if filename.exists():
         if filename.is_dir(): reader = ImageFolder(filename)
         elif filename.suffix == '.tiff' or filename.suffix == '.tif': reader = BigImage(filename)
+        elif filename.suffix == '.svs': reader = SVSImage(filename)
         elif filename.suffix == '.jpeg' or filename.suffix == '.jpg': reader = SmallImage(filename)
-        elif filename.suffix == '.json': 
+        elif filename.suffix == '.json':
             reader = JsonReader(filename, prefix='')
             readers[filename] = reader
     else:
@@ -34,6 +37,7 @@ def create_reader(filename):
         return None
 
     return reader
+
 
 @app.route("/tile/embtile/<path:filename>/<int:zoom>_<int:x>_<int:y>")
 def emb_selector(filename, zoom, x, y):
@@ -44,6 +48,7 @@ def emb_selector(filename, zoom, x, y):
     #return send_file(img_name, mimetype='image/png', as_attachment=False)
     return Response(mimetype='image/png', headers=[('X-Accel-Redirect', f'/storage/{img_name}')])
 
+
 @app.route("/tile/<path:filename>/<int:zoom>_<int:x>_<int:y>.png")
 def tile_selector(filename, x, y, zoom):
     if app.debug: log(f'{filename}, {x}, {y}, {zoom}')
@@ -51,7 +56,8 @@ def tile_selector(filename, x, y, zoom):
     data = reader.read_tile(x,y,zoom)
     if app.debug: log(f'Returning raster: {data.shape}, {data.dtype}, {data.max()}')
     return send_image(data)
-    
+
+
 @app.route("/tile/<path:filename>/<int:zoom>_<int:l>_<int:t>_<int:r>_<int:b>")
 def raster_selector(filename, zoom, l,t,r,b):
     if app.debug: log(f'{filename}, {l}, {t}, {r}, {b}, {zoom}')
@@ -59,6 +65,7 @@ def raster_selector(filename, zoom, l,t,r,b):
     data = reader.read_image_part(l,t,r,b, zoom)
     if app.debug: log(f'Returning raster: {data.shape}, {data.dtype}, {data.max()}')
     return send_image(data)
+
 
 def send_image(data):
     img_bytes = io.BytesIO()
@@ -68,12 +75,9 @@ def send_image(data):
     return send_file(img_bytes, mimetype='image/png', as_attachment=False)
 
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--d', const=True, default=False, nargs='?', help='debug')
     args = parser.parse_args()
     host, port = '0.0.0.0', 5000
     app.run(host=host, port=port, debug=args.d)
-
-

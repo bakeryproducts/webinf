@@ -4,7 +4,7 @@ include ${CONFIG}
 
 all: start 
 start:
-	docker-compose --env-file ${CONFIG} up webserver tiler nginx ember
+	docker-compose --env-file ${CONFIG} up webserver tiler nginx labeler
 start-all:
 	docker-compose --env-file ${CONFIG} up 
 build:

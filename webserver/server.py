@@ -12,21 +12,23 @@ app = Flask(__name__)
 
 def log(m): print(m)
 
+
 @app.route('/')
 def index():
     p = Path('/mnt/data').absolute()
     redir = {
-            '*.tif': 'view',
-            '*.tiff': 'view',
-            '*.jpg': 'view',
-            '*.jpeg': 'view',
-            '*.emb': 'ember/gen',
-            'prj.json': 'ember',
-            }
+        '*.tif': 'view',
+        '*.tiff': 'view',
+        '*.svs': 'view',
+        '*.jpg': 'view',
+        '*.jpeg': 'view',
+        '*.emb': 'ember/gen',
+        'prj.json': 'ember',
+    }
 
     files = []
     for ext in redir:
-        files.append(p.rglob(ext)) 
+        files.append(p.rglob(ext))
 
     s = ''
     for fns, ext in zip(files, redir):
@@ -40,6 +42,7 @@ def index():
 
     return s
 
+
 @app.route("/view/<path:filename>")
 def viewer(filename):
     if app.debug: log(f'FILENAME: {filename}')
@@ -52,6 +55,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
     host, port = '0.0.0.0', 5000
     app.run(host=host, port=port, debug=args.d)
-
-
-

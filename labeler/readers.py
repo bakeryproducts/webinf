@@ -1,11 +1,13 @@
 import json
 from pathlib import Path
 
+
 class _Annotation:
     def __init__(self, filename, info=None):
         filename = Path(filename)
         self.filename = filename.with_suffix('')
         self.info = info
+
 
 class PamReader(_Annotation):
     def __init__(self, *args, **kwargs):
@@ -14,7 +16,7 @@ class PamReader(_Annotation):
     def _read_ann(self, filename):
         with open(str(filename), 'r') as f:
             data = json.load(f)
-        
+
         polys = []
         for ann in data:
             poly = ann['geometry']['coordinates'][0]
@@ -37,4 +39,3 @@ class PamReader(_Annotation):
                 polys.append(self._read_ann(filename))
 
         return polys
-

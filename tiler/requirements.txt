@@ -1,3 +1,4 @@
+markupsafe==2.0.1
 numpy
 opencv-python
 Pillow
@@ -5,7 +6,7 @@ Flask
 GDAL==2.2.3
 rasterio
 pandas
-
+slideio
 Werkzeug~=1.0.1
 uwsgi
 PyJWT
