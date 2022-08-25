@@ -22,25 +22,46 @@ def index():
         '*.svs': 'view',
         '*.jpg': 'view',
         '*.jpeg': 'view',
+        '*.png': 'view',
         '*.emb': 'ember/gen',
         'prj.json': 'ember',
     }
 
     files = []
-    for ext in redir:
-        files.append(p.rglob(ext))
-
     s = ''
-    for fns, ext in zip(files, redir):
-        s+=f'<h2>{ext}</h2>'
-        s+='<details>'
-        for fn in sorted(fns):
-            fn_sub_path = str(fn.relative_to(p))
-            re_fn_sub_path = urllib.parse.quote(fn_sub_path, safe='')
-            url = f'<a href="{redir[ext]}/' + re_fn_sub_path + '">'+fn_sub_path+'</a>'
-            s += url
-            s += '<br/>\n'
-        s+='</details>'
+    for ext in redir:
+        all_files = list(p.rglob(ext))
+        folders = set()
+        for file in all_files:
+            folders.add(str(file.parent))
+
+        for folder in list(folders):
+            folder = Path(folder)
+            folder_files = list(folder.glob(ext))
+
+            prpath = str(folder.relative_to(p))
+            s += f'<h2>{prpath}:{ext}</h2>'
+            s += '<details>'
+
+            for fn in sorted(folder_files):
+                fn_sub_path = str(fn.relative_to(p))
+                re_fn_sub_path = urllib.parse.quote(fn_sub_path, safe='')
+                url = f'<a href="{redir[ext]}/' + re_fn_sub_path + '">'+fn_sub_path+'</a>'
+                s += url
+                s += '<br/>\n'
+            s+='</details>'
+
+    # s = ''
+    # for fns, ext in zip(files, redir):
+    #     s+=f'<h2>{ext}</h2>'
+    #     s+='<details>'
+    #     for fn in sorted(fns):
+    #         fn_sub_path = str(fn.relative_to(p))
+    #         re_fn_sub_path = urllib.parse.quote(fn_sub_path, safe='')
+    #         url = f'<a href="{redir[ext]}/' + re_fn_sub_path + '">'+fn_sub_path+'</a>'
+    #         s += url
+    #         s += '<br/>\n'
+    #     s+='</details>'
 
     return s
 

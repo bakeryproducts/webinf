@@ -29,6 +29,7 @@ def create_reader(filename):
         elif filename.suffix == '.tiff' or filename.suffix == '.tif': reader = BigImage(filename)
         elif filename.suffix == '.svs': reader = SVSImage(filename)
         elif filename.suffix == '.jpeg' or filename.suffix == '.jpg': reader = SmallImage(filename)
+        elif filename.suffix == '.png': reader = SmallImage(filename)
         elif filename.suffix == '.json':
             reader = JsonReader(filename, prefix='')
             readers[filename] = reader

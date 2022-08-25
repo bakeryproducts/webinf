@@ -2,7 +2,8 @@ import json
 from pathlib import Path
 
 import cv2
-import gdal
+# import gdal
+from osgeo import gdal
 import slideio
 import numpy as np
 import pandas as pd
