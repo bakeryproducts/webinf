@@ -60,6 +60,10 @@ document.addEventListener("keypress", onKeyPressed)
 
 
 L.Draw.Polygon.prototype._onTouch = L.Util.falseFn;
+L.drawLocal.draw.handlers.polygon.tooltip.cont = '';
+L.drawLocal.draw.handlers.polygon.tooltip.start = '';
+L.drawLocal.draw.handlers.polygon.tooltip.end = '';
+
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
