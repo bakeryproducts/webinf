@@ -1,11 +1,11 @@
+import argparse
 import werkzeug
 from werkzeug.routing import PathConverter
 from packaging import version
-from flask import Flask, make_response, send_file, jsonify
-import argparse
+from flask import Flask, jsonify, request
 from pathlib import Path
 
-from readers import PamReader
+from readers import PamReader, PamWriter
 
 app = Flask(__name__)
 # whether or not merge_slashes is available and true
@@ -30,6 +30,15 @@ def ann_selector(filename):
     filename = Path('/mnt/data') / Path(filename)
     reader = PamReader(filename)
     return ann_read(reader)
+
+
+@app.route('/save/<everything:filename>',methods=["GET", "POST"])
+def save(filename):
+    if request.method == 'POST':
+        data = request.json
+        pw = PamWriter(filename)
+        pw._create_ann(data)
+        return jsonify(data)
 
 
 def ann_read(reader): return jsonify(reader())
