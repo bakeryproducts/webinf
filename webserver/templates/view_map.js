@@ -130,21 +130,17 @@ $.ajax({
     dataType: "json",
     success: function(all_polys){
             console.log('LOADED');
-            var colors = ['red','green','blue'];
-            var count = 0;
             all_polys.forEach(function(polys){
-                var color = colors[count]
                 polys.forEach(function(e){
                     //new L.Polyline(e, {
                     new L.Polygon(e, {
-                        color: color,
+                        color: 'green',
                         weight: 7,
-                        opacity: .3,
+                        //opacity: .3,
                         //smoothFactor: 1
                     //}) .addTo(map);
                     }) .addTo(drawnItems);
                 });
-                count +=1;
             });
     },
     error: function(errMsg) {
