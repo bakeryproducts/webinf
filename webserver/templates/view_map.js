@@ -63,6 +63,8 @@ L.Draw.Polygon.prototype._onTouch = L.Util.falseFn;
 L.drawLocal.draw.handlers.polygon.tooltip.cont = '';
 L.drawLocal.draw.handlers.polygon.tooltip.start = '';
 L.drawLocal.draw.handlers.polygon.tooltip.end = '';
+L.drawLocal.edit.handlers.edit.tooltip.text = ''
+L.drawLocal.edit.handlers.edit.tooltip.subtext = ''
 
 var drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
