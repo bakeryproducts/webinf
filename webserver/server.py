@@ -1,6 +1,7 @@
 import urllib
 import argparse
 from pathlib import Path
+from collections import defaultdict
 
 from flask import Flask, make_response, send_file, jsonify, request, render_template
 
@@ -24,17 +25,16 @@ def index():
         'prj.json': 'ember',
     }
 
-    files = []
     s = ''
     for ext in redir:
         all_files = list(p.rglob(ext))
-        folders = set()
+        folders = defaultdict(list)
         for file in all_files:
-            folders.add(str(file.parent))
+            folders[str(file.parent)].append(file)
 
-        for folder in list(folders):
+        for folder in sorted(list(folders)):
+            folder_files = folders[folder]
             folder = Path(folder)
-            folder_files = list(folder.glob(ext))
 
             prpath = str(folder.relative_to(p))
             s += f'<h2>{prpath}:{ext}</h2>'
