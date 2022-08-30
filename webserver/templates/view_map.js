@@ -67,7 +67,9 @@ L.drawLocal.edit.handlers.edit.tooltip.text = ''
 L.drawLocal.edit.handlers.edit.tooltip.subtext = ''
 
 var drawnItems = new L.FeatureGroup();
+var editItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
+map.addLayer(editItems);
 
 var drawControl = new L.Control.Draw({
     position: 'topright',
@@ -93,7 +95,7 @@ var drawControl = new L.Control.Draw({
         marker: false,
     },
     edit: {
-        featureGroup: drawnItems
+        featureGroup: editItems
     }
 });
 map.addControl(drawControl);
@@ -102,6 +104,11 @@ map.on('draw:created', function (e) {
     var type = e.layerType,
         layer = e.layer;
     drawnItems.addLayer(layer);
+
+    layer.on('click', function (e) {
+    var t = e.target;
+    editItems.addLayer(t)
+    });
 });
 
 $("#demo_btn").on("click", function() {
@@ -138,14 +145,17 @@ $.ajax({
             console.log('LOADED');
             all_polys.forEach(function(polys){
                 polys.forEach(function(e){
-                    //new L.Polyline(e, {
-                    new L.Polygon(e, {
-                        color: 'green',
-                        weight: 7,
-                        //opacity: .3,
-                        //smoothFactor: 1
-                    //}) .addTo(map);
-                    }) .addTo(drawnItems);
+                    var layer = new L.Polygon(e, {
+                                color: 'green',
+                                weight: 7,
+                                //opacity: .3,
+                                //smoothFactor: 1
+                            }).addTo(drawnItems);
+
+                    layer.on('click', function (e) {
+                    var t = e.target;
+                    editItems.addLayer(t)
+                    });
                 });
             });
     },

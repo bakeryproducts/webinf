@@ -33,6 +33,7 @@ def index():
             folders[str(file.parent)].append(file)
 
         for folder in sorted(list(folders)):
+            if 'wont_view' in folder: continue
             folder_files = folders[folder]
             folder = Path(folder)
 
