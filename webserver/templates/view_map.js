@@ -149,6 +149,7 @@ $.ajax({
                                 color: 'green',
                                 weight: 7,
                                 //opacity: .3,
+                                //fillOpacity: .0,
                                 //smoothFactor: 1
                             }).addTo(drawnItems);
 
