@@ -1,6 +1,6 @@
 var map = L.map('map', {
         crs: L.CRS.Simple,
-        center: [0, 0],
+        center: [-20, 20],
         zoom: 5,
     });
 var local_url = document.location.origin;
@@ -95,7 +95,7 @@ var drawControl = new L.Control.Draw({
         marker: false,
     },
     edit: {
-        featureGroup: editItems
+        featureGroup: drawnItems//editItems
     }
 });
 map.addControl(drawControl);
@@ -147,9 +147,9 @@ $.ajax({
                 polys.forEach(function(e){
                     var layer = new L.Polygon(e, {
                                 color: 'green',
-                                weight: 7,
-                                //opacity: .3,
-                                //fillOpacity: .0,
+                                weight: 4,
+                                opacity: .7,
+                                fillOpacity: .0,
                                 //smoothFactor: 1
                             }).addTo(drawnItems);
 
